@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 /**
- * Advice for logging of all repository methods.
+ * Advice for logging all repository methods.
  *
  * @author Oleksandr Semenchenko
  */

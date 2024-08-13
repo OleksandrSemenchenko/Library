@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The REST controller to support end points to manage users.
+ * The REST controller supports end points to manage users.
  *
  * @author Oleksandr Semenchenko
  */
