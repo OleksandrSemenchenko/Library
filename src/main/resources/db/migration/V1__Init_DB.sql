@@ -12,7 +12,6 @@ CREATE TABLE books(
 	title VARCHAR(256) NOT NULL,
 	author VARCHAR(256) NOT NULL,
 	amount INTEGER,
-	user_id VARCHAR(36),
 	PRIMARY KEY(id)
 );
 

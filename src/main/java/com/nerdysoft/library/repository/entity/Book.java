@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -21,7 +22,7 @@ public class Book {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @JdbcTypeCode(SqlTypes.VARCHAR)
-  private String id;
+  private UUID id;
 
   private String title;
   private String author;
