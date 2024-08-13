@@ -8,8 +8,11 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -17,6 +20,9 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Table(name = "books")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
 
   @Id

@@ -1,8 +1,9 @@
 package com.nerdysoft.library.repository;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.nerdysoft.library.repository.entity.Book;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,16 +20,17 @@ class BookRepositoryTest {
   @Autowired private BookRepository bookRepository;
 
   @Test
-  void existsByAuthorAndTitle_shouldReturnFalse_whenNoBookInDb() {
-    boolean isBookExist = bookRepository.existsByAuthorAndTitle(AUTHOR, NOT_EXISTING_BOOK_TITLE);
+  void findByAuthorAndTitle_shouldReturnEmptyOptional_whenNoBookInDb() {
+    Optional<Book> bookOptional =
+        bookRepository.findByAuthorAndTitle(AUTHOR, NOT_EXISTING_BOOK_TITLE);
 
-    assertFalse(isBookExist);
+    assertTrue(bookOptional.isEmpty());
   }
 
   @Test
   void existsByAuthorAndTitle_shouldReturnTrue_whenBookIsInDb() {
-    boolean isBookExist = bookRepository.existsByAuthorAndTitle(AUTHOR, BOOK_TITLE);
+    Optional<Book> bookOptional = bookRepository.findByAuthorAndTitle(AUTHOR, BOOK_TITLE);
 
-    assertTrue(isBookExist);
+    assertTrue(bookOptional.isPresent());
   }
 }
