@@ -4,5 +4,4 @@ import com.nerdysoft.library.service.BookService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BookServiceImpl implements BookService {
-}
+public class BookServiceImpl implements BookService {}

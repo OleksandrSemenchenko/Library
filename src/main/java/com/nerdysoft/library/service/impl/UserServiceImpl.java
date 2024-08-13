@@ -7,10 +7,9 @@ import com.nerdysoft.library.repository.UserRepository;
 import com.nerdysoft.library.repository.entity.User;
 import com.nerdysoft.library.service.UserService;
 import com.nerdysoft.library.service.dto.UserDto;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto getUser(UUID userId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND.formatted(userId)));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(
+                () ->
+                    new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND.formatted(userId)));
     return userMapper.toDto(user);
   }
 }

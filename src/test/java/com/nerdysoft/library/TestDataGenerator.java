@@ -2,7 +2,6 @@ package com.nerdysoft.library;
 
 import com.nerdysoft.library.repository.entity.User;
 import com.nerdysoft.library.service.dto.UserDto;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -13,18 +12,10 @@ public class TestDataGenerator {
   private static final LocalDate MEMBERSHIP_DATE = LocalDate.of(2024, 8, 13);
 
   public static UserDto generateUserDto() {
-    return UserDto.builder()
-        .id(USER_ID)
-        .name(USER_NAME)
-        .membershipDate(MEMBERSHIP_DATE)
-        .build();
+    return UserDto.builder().id(USER_ID).name(USER_NAME).membershipDate(MEMBERSHIP_DATE).build();
   }
 
   public static User generateUser() {
-    return User.builder()
-        .id(USER_ID)
-        .name(USER_NAME)
-        .membershipDate(MEMBERSHIP_DATE)
-        .build();
+    return User.builder().id(USER_ID).name(USER_NAME).membershipDate(MEMBERSHIP_DATE).build();
   }
 }

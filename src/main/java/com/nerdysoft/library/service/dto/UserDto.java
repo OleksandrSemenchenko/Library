@@ -1,12 +1,11 @@
 package com.nerdysoft.library.service.dto;
 
+import java.time.LocalDate;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserDto {
 
-    private UUID id;
-    private String name;
-    private LocalDate membershipDate;
+  private UUID id;
+  private String name;
+  private LocalDate membershipDate;
 }

@@ -1,12 +1,17 @@
 package com.nerdysoft.library.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.nerdysoft.library.TestDataGenerator;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserNotFoundException;
 import com.nerdysoft.library.mapper.UserMapper;
 import com.nerdysoft.library.repository.UserRepository;
 import com.nerdysoft.library.repository.entity.User;
 import com.nerdysoft.library.service.dto.UserDto;
-import org.junit.jupiter.api.Assertions;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,24 +22,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
   private static final UUID USER_ID = UUID.fromString("f0d9bdfc-38e7-4a34-b07f-8216574efbb5");
   private static final UUID NOT_EXISTING_USER_ID = UUID.randomUUID();
 
-  @InjectMocks
-  private UserServiceImpl userService;
+  @InjectMocks private UserServiceImpl userService;
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
   @BeforeEach
   void setUp() {

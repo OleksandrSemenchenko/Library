@@ -2,13 +2,12 @@ package com.nerdysoft.library.controller;
 
 import com.nerdysoft.library.service.UserService;
 import com.nerdysoft.library.service.dto.UserDto;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor

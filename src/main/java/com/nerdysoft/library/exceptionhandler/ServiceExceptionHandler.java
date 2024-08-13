@@ -1,4 +1,3 @@
 package com.nerdysoft.library.exceptionhandler;
 
-public class ServiceExceptionHandler {
-}
+public class ServiceExceptionHandler {}
