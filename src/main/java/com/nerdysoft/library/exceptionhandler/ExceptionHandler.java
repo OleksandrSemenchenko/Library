@@ -7,18 +7,23 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * The exception handler for the whole service. Exceptions arising when calling a controller are
+ * handled here.
+ *
+ * @author Oleksandr Semenchenko
+ */
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class ServiceExceptionHandler {
+public class ExceptionHandler {
 
   private static final String DETAILS_FIELD = "details";
   private static final String ERROR_CODE_FIELD = "errorCode";
   private static final String TIMESTAMP_FILED = "timestamp";
 
-  @ExceptionHandler(UnitNotFoundException.class)
+  @org.springframework.web.bind.annotation.ExceptionHandler(UnitNotFoundException.class)
   protected ResponseEntity<Object> handleUnitNotFoundException(UnitNotFoundException e) {
     Map<String, Object> responseBody = buildResponseBody(HttpStatus.NOT_FOUND, e.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
