@@ -20,7 +20,7 @@ public class BookController {
 
   @PostMapping(value = V1 + BOOKS_PATH)
   public ResponseEntity<BookDto> addBook(@RequestBody @Validated BookDto bookDto) {
-    BookDto bookData = bookService.addBook(bookDto);
-    return ResponseEntity.ok(bookData);
+    BookDto addedBook = bookService.addBook(bookDto);
+    return ResponseEntity.ok(addedBook);
   }
 }
