@@ -3,8 +3,10 @@ package com.nerdysoft.library.service.impl;
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_IS_BORROWED;
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_NOT_FOUND;
 
+import com.nerdysoft.library.exceptionhandler.ExceptionMessages;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookDeletionConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
-import com.nerdysoft.library.exceptionhandler.exceptions.DeleteForbiddenException;
+import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
 import com.nerdysoft.library.mapper.BookMapper;
 import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
@@ -25,10 +27,38 @@ public class BookServiceImpl implements BookService {
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
 
+  @Override
+  public BookDto decreaseBooksAmountByOne(UUID bookId) {
+    Book book = findBookById(bookId);
+    int booksAmount = book.getAmount();
+
+    if (booksAmount == 0) {
+      log.debug(ExceptionMessages.ZERO_BOOKS_AMOUNT);
+      throw new BooksAmountConflictException(ExceptionMessages.ZERO_BOOKS_AMOUNT);
+    }
+    booksAmount--;
+    book.setAmount(booksAmount);
+    Book savedBook = bookRepository.save(book);
+    return bookMapper.toDto(savedBook);
+  }
+
+  @Override
+  public BookDto getBookById(UUID bookId) {
+    Book book = findBookById(bookId);
+    return bookMapper.toDto(book);
+  }
+
+  private Book findBookById(UUID bookId) {
+    return bookRepository
+        .findById(bookId)
+        .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND.formatted(bookId)));
+  }
+
+  @Override
   public void deleteBookById(UUID bookId) {
     if (bookRepository.isBookRelatedToAnyUser(bookId.toString())) {
       log.debug(BOOK_IS_BORROWED.formatted(bookId));
-      throw new DeleteForbiddenException(BOOK_IS_BORROWED.formatted(bookId));
+      throw new BookDeletionConflictException(BOOK_IS_BORROWED.formatted(bookId));
     }
     Book book =
         bookRepository

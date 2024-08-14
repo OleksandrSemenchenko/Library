@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerdysoft.library.TestDataGenerator;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookDeletionConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
-import com.nerdysoft.library.exceptionhandler.exceptions.DeleteForbiddenException;
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
 import java.util.UUID;
@@ -51,14 +51,14 @@ class BookControllerTest {
 
   @Test
   void deleteBookById_shouldReturnStatus403_whenBookIsBorrowed() throws Exception {
-    doThrow(DeleteForbiddenException.class).when(bookService).deleteBookById(BOOK_ID);
+    doThrow(BookDeletionConflictException.class).when(bookService).deleteBookById(BOOK_ID);
 
     mockMvc
         .perform(delete(V1 + BOOK_PATH, BOOK_ID))
-        .andExpect(status().isForbidden())
+        .andExpect(status().isConflict())
         .andExpect(jsonPath("$.details").hasJsonPath())
         .andExpect(jsonPath("$.timestamp").exists())
-        .andExpect(jsonPath("$.errorCode", is(403)));
+        .andExpect(jsonPath("$.errorCode", is(409)));
   }
 
   @Test

@@ -23,5 +23,6 @@ CREATE TABLE users_books (
 	book_id VARCHAR(36) NOT NULL,
 	PRIMARY KEY(id),
 	CONSTRAINT fk_users_books_users FOREIGN KEY(user_id) REFERENCES users(id),
-	CONSTRAINT fk_users_books_books FOREIGN key(book_id) REFERENCES books(id)
+	CONSTRAINT fk_users_books_books FOREIGN key(book_id) REFERENCES books(id),
+	CONSTRAINT uq_users_books UNIQUE(user_id, book_id)
 );

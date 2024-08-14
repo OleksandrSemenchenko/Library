@@ -1,5 +1,6 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.nerdysoft.library.service.UserService;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -25,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private static final String V1 = "/v1";
-  private static final String USER_ID_PATH = "/users/{userId}";
+  private static final String USER_PATH = "/users/{userId}";
+  private static final String BOOK_PATH = "/books/{bookId}";
 
   private static final String USER_NOT_FOUND_ERROR_EXAMPLE =
       """
@@ -38,6 +42,12 @@ public class UserController {
 
   private final UserService userService;
 
+  @PutMapping(value = V1 + USER_PATH + BOOK_PATH)
+  @ResponseStatus(OK)
+  public void borrowBook(@PathVariable UUID userId, @PathVariable UUID bookId) {
+    userService.borrowBook(userId, bookId);
+  }
+
   @Operation(
       summary = "Returns a user",
       operationId = "getUser",
@@ -49,9 +59,9 @@ public class UserController {
             description = "User not found",
             content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
       })
-  @GetMapping(value = V1 + USER_ID_PATH, produces = APPLICATION_JSON_VALUE)
+  @GetMapping(value = V1 + USER_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
-    UserDto user = userService.getUser(userId);
+    UserDto user = userService.getUserById(userId);
     return ResponseEntity.ok(user);
   }
 }

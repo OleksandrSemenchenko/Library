@@ -31,7 +31,7 @@ class UserControllerTest {
 
   @Test
   void getUser_shouldReturnStatus404_whenNoUserInDb() throws Exception {
-    when(userService.getUser(NOT_EXISTING_USER_ID)).thenThrow(UserNotFoundException.class);
+    when(userService.getUserById(NOT_EXISTING_USER_ID)).thenThrow(UserNotFoundException.class);
 
     mockMvc
         .perform(
