@@ -33,6 +33,13 @@ public class UserServiceImpl implements UserService {
   @Value("${application.max-book-quantity-for-user}")
   private int maxBookQuantityForUser;
 
+  @Override
+  @Transactional
+  public void deleteUser(UUID userId) {
+    User user = findUserById(userId);
+    userRepository.delete(user);
+  }
+
   /**
    * Creates a relation between a user and a book if the book amount is greater than zero and the
    * user has fewer books than the maximum allowed book quantity. When the relation is created the

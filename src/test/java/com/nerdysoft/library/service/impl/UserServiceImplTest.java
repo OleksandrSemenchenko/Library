@@ -49,6 +49,24 @@ class UserServiceImplTest {
   }
 
   @Test
+  void deleteUser_shouldDeleteUser_whenUserIsInDb() {
+    User user = TestDataGenerator.generateUser();
+
+    when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+    userService.deleteUser(USER_ID);
+
+    verify(userRepository).delete(user);
+  }
+
+  @Test
+  void deleteUser_shouldThrowException_whenNoUserInDb() {
+    when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+
+    assertThrows(UserNotFoundException.class, () -> userService.deleteUser(USER_ID));
+  }
+
+  @Test
   void borrowBook_shouldCreateUserBookRelation_whenRequested() {
     User user = TestDataGenerator.generateUser();
     BookDto bookDto = TestDataGenerator.generateBookDto();
