@@ -2,6 +2,7 @@ package com.nerdysoft.library.service.impl;
 
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.MAX_USER_BOOKS_QUANTITY;
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.USER_BOOK_RELATION_ALREADY_EXISTS;
+import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.USER_BORROWED_BOOKS;
 
 import com.nerdysoft.library.exceptionhandler.ExceptionMessages;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
@@ -34,6 +35,25 @@ public class UserServiceImpl implements UserService {
   private int maxBookQuantityForUser;
 
   /**
+   * Deletes a user that has no borrowed books.
+   *
+   * @param userId - a user ID
+   */
+  @Override
+  @Transactional
+  public void deleteUser(UUID userId) {
+    User user = findUserById(userId);
+    int userBookQuantity = userRepository.countBookRelationsByUserId(userId.toString());
+
+    if (userBookQuantity != 0) {
+      log.debug(USER_BORROWED_BOOKS.formatted(userId, userBookQuantity));
+      throw new UserBookRelationConflictException(
+          USER_BORROWED_BOOKS.formatted(userId, userBookQuantity));
+    }
+    userRepository.delete(user);
+  }
+
+  /**
    * Creates a relation between a user and a book if the book amount is greater than zero and the
    * user has fewer books than the maximum allowed book quantity. When the relation is created the
    * book amount decreases by one.
@@ -47,13 +67,13 @@ public class UserServiceImpl implements UserService {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
     BookDto bookDto = bookService.getBookById(bookId);
-    int userBooksQuantity = userRepository.countBookRelationsById(userId.toString());
+    int userBookQuantity = userRepository.countBookRelationsByUserId(userId.toString());
 
     if (bookDto.getAmount() == 0) {
       log.debug(ExceptionMessages.NO_BOOKS);
       throw new BookAmountConflictException(ExceptionMessages.NO_BOOKS);
-    } else if (userBooksQuantity >= maxBookQuantityForUser) {
-      log.debug(MAX_USER_BOOKS_QUANTITY);
+    } else if (userBookQuantity >= maxBookQuantityForUser) {
+      log.debug(MAX_USER_BOOKS_QUANTITY.formatted(maxBookQuantityForUser));
       throw new UserBookRelationConflictException(
           MAX_USER_BOOKS_QUANTITY.formatted(maxBookQuantityForUser));
     } else {

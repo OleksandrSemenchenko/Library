@@ -8,7 +8,9 @@ INSERT INTO books(id, title, author, amount)
     ('2decc0bd-9730-4145-b18e-94029dfb961f', 'Effective Java', 'Bloch Joshua', 2);
 
 INSERT INTO users(id, name, membership_date)
-	VALUES('f0d9bdfc-38e7-4a34-b07f-8216574efbb5', 'John Doe', '2024-08-13');
+	VALUES
+	  ('f0d9bdfc-38e7-4a34-b07f-8216574efbb5', 'John Doe', '2024-08-13'),
+	  ('ccc5848f-b32f-44b5-86f1-b51aac112be0', 'John Smith', '2024-08-13');
 
 INSERT INTO users_books(id, user_id, book_id)
 	VALUES

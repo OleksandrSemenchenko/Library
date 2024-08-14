@@ -26,8 +26,17 @@ class UserControllerIntegrationTest {
   private static final String BOOK_PATH = "/books/{bookId}";
   private static final UUID USER_ID = UUID.fromString("f0d9bdfc-38e7-4a34-b07f-8216574efbb5");
   private static final UUID BOOK_ID = UUID.fromString("42d3f123-dd2f-4a10-a182-6506edd9d355");
+  private static final UUID USER_ID_WITHOUT_BOOKS =
+      UUID.fromString("ccc5848f-b32f-44b5-86f1-b51aac112be0");
 
   @Autowired private MockMvc mockMvc;
+
+  @Test
+  void deleteUser_shouldReturnStatus204_whenUserIsDeleted() throws Exception {
+    mockMvc
+        .perform(MockMvcRequestBuilders.delete(V1 + USER_PATH, USER_ID_WITHOUT_BOOKS))
+        .andExpect(status().isNoContent());
+  }
 
   @Test
   void borrowBook_shouldReturnStatus200_whenUserBorrowsBook() throws Exception {

@@ -1,5 +1,6 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,6 +53,27 @@ public class UserController {
       """;
 
   private final UserService userService;
+
+  @Operation(
+      summary = "Deletes a user",
+      operationId = "deleteUser",
+      description = "Deletes a user if their don't have borrowed books",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Deletes successfully a user"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "A user not found",
+            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "A user has borrowed books",
+            content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
+      })
+  @DeleteMapping(value = V1 + USER_PATH)
+  @ResponseStatus(NO_CONTENT)
+  public void deleteUser(@PathVariable UUID userId) {
+    userService.deleteUser(userId);
+  }
 
   @Operation(
       summary = "Relates a user with a book",
