@@ -46,10 +46,10 @@ public class BookController {
 
   private final BookService bookService;
 
-  @DeleteMapping(value = V1 + BOOKS_PATH)
+  @DeleteMapping(value = V1 + BOOK_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteBook(@PathVariable UUID bookId) {
-    bookService.deleteBook(bookId);
+  public void deleteBookById(@PathVariable UUID bookId) {
+    bookService.deleteBookById(bookId);
   }
 
   /**

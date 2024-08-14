@@ -25,7 +25,7 @@ public class BookServiceImpl implements BookService {
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
 
-  public void deleteBook(UUID bookId) {
+  public void deleteBookById(UUID bookId) {
     if (bookRepository.isBookRelatedToAnyUser(bookId)) {
       log.debug(BOOK_IS_BORROWED.formatted(bookId));
       throw new DeleteForbiddenException(BOOK_IS_BORROWED.formatted(bookId));

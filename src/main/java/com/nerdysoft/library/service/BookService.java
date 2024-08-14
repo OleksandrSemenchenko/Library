@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface BookService {
 
-  void deleteBook(UUID bookId);
+  void deleteBookById(UUID bookId);
 
   BookDto addBook(BookDto book);
 }

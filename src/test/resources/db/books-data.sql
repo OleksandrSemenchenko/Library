@@ -1,3 +1,4 @@
+DELETE FROM users_books;
 DELETE FROM books;
 DELETE FROM users;
 

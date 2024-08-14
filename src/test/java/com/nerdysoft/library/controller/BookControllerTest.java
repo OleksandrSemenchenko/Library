@@ -1,14 +1,19 @@
 package com.nerdysoft.library.controller;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerdysoft.library.TestDataGenerator;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
+import com.nerdysoft.library.exceptionhandler.exceptions.DeleteForbiddenException;
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,12 +28,38 @@ class BookControllerTest {
 
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
+  private static final String BOOK_PATH = "/books/{bookId}";
+  private static final UUID BOOK_ID = UUID.randomUUID();
 
   @Autowired private MockMvc mockMvc;
 
   @MockBean private BookService bookService;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @Test
+  void deleteBookById_shouldReturnStatus404_whenNoBookInDb() throws Exception {
+    doThrow(BookNotFoundException.class).when(bookService).deleteBookById(BOOK_ID);
+
+    mockMvc
+        .perform(delete(V1 + BOOK_PATH, BOOK_ID))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.timestamp").exists())
+        .andExpect(jsonPath("$.errorCode", is(404)));
+  }
+
+  @Test
+  void deleteBookById_shouldReturnStatus403_whenBookIsBorrowed() throws Exception {
+    doThrow(DeleteForbiddenException.class).when(bookService).deleteBookById(BOOK_ID);
+
+    mockMvc
+        .perform(delete(V1 + BOOK_PATH, BOOK_ID))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.timestamp").exists())
+        .andExpect(jsonPath("$.errorCode", is(403)));
+  }
 
   @Test
   void addBook_shouldReturnStatus400AndErrorBody_whenBookTitleIsNotValid() throws Exception {
