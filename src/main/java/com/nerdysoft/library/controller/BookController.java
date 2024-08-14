@@ -8,11 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,6 +31,7 @@ public class BookController {
 
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
+  private static final String BOOK_PATH = "/books/{bookId}";
 
   private static final String ADD_BOOK_BAD_REQUEST_ERROR_EXAMPLE =
       """
@@ -39,6 +45,12 @@ public class BookController {
       """;
 
   private final BookService bookService;
+
+  @DeleteMapping(value = V1 + BOOKS_PATH)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteBook(@PathVariable UUID bookId) {
+    bookService.deleteBook(bookId);
+  }
 
   /**
    * If a book is added with the same title and author that already exists in the database, the
