@@ -5,5 +5,7 @@ import java.util.UUID;
 
 public interface UserService {
 
-  UserDto getUser(UUID userId);
+  void borrowBook(UUID userId, UUID bookId);
+
+  UserDto getUserById(UUID userId);
 }

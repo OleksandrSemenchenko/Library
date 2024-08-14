@@ -5,6 +5,10 @@ import java.util.UUID;
 
 public interface BookService {
 
+  BookDto decreaseBookAmountByOne(UUID bookId);
+
+  BookDto getBookById(UUID bookId);
+
   void deleteBookById(UUID bookId);
 
   BookDto addBook(BookDto book);

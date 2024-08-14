@@ -19,3 +19,6 @@ spring:
 logging:
   level:
     root: "warn"
+
+application:
+  max-book-quantity-for-user: 10
