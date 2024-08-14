@@ -17,7 +17,12 @@ public class BookServiceImpl implements BookService {
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
 
-  // TODO if amount is null
+  /**
+   * Creates a book if it doesn't exist or increases its amount in another case.
+   *
+   * @param bookDto - a book
+   * @return - a created or updated book
+   */
   @Override
   @Transactional
   public BookDto addBook(BookDto bookDto) {
