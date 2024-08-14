@@ -1,5 +1,6 @@
 package com.nerdysoft.library.exceptionhandler;
 
+import com.nerdysoft.library.exceptionhandler.exceptions.ActionForbiddenException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UnitNotFoundException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -32,6 +33,12 @@ public class ServiceExceptionHandler {
   protected ResponseEntity<Object> handleUnitNotFoundException(UnitNotFoundException e) {
     Map<String, Object> responseBody = buildResponseBody(HttpStatus.NOT_FOUND, e.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+  }
+
+  @ExceptionHandler(ActionForbiddenException.class)
+  protected ResponseEntity<Object> handleActionForbiddenException(ActionForbiddenException e) {
+    Map<String, Object> responseBody = buildResponseBody(HttpStatus.FORBIDDEN, e.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

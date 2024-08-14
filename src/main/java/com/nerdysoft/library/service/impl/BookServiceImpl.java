@@ -1,5 +1,10 @@
 package com.nerdysoft.library.service.impl;
 
+import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_IS_BORROWED;
+import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_NOT_FOUND;
+
+import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
+import com.nerdysoft.library.exceptionhandler.exceptions.DeleteForbiddenException;
 import com.nerdysoft.library.mapper.BookMapper;
 import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
@@ -7,15 +12,30 @@ import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
 
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
+
+  public void deleteBookById(UUID bookId) {
+    if (bookRepository.isBookRelatedToAnyUser(bookId.toString())) {
+      log.debug(BOOK_IS_BORROWED.formatted(bookId));
+      throw new DeleteForbiddenException(BOOK_IS_BORROWED.formatted(bookId));
+    }
+    Book book =
+        bookRepository
+            .findById(bookId)
+            .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND.formatted(bookId)));
+    bookRepository.delete(book);
+  }
 
   /**
    * Creates a book if it doesn't exist or increases its amount in another case.
