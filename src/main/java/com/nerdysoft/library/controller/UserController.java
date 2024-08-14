@@ -54,6 +54,21 @@ public class UserController {
 
   private final UserService userService;
 
+  @Operation(
+      summary = "Deletes a user",
+      operationId = "deleteUser",
+      description = "Deletes a user if their don't have borrowed books",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Deletes successfully a user"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "A user not found",
+            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "A user has borrowed books",
+            content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
+      })
   @DeleteMapping(value = V1 + USER_PATH)
   @ResponseStatus(NO_CONTENT)
   public void deleteUser(@PathVariable UUID userId) {
