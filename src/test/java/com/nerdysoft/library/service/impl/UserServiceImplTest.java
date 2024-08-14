@@ -60,6 +60,18 @@ class UserServiceImplTest {
   }
 
   @Test
+  void deleteUser_shouldThrowException_whenUserHasBorrowedBooks() {
+    User user = TestDataGenerator.generateUser();
+    int userBorrowedBook = 1;
+
+    when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+    when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
+        .thenReturn(userBorrowedBook);
+
+    assertThrows(UserBookRelationConflictException.class, () -> userService.deleteUser(USER_ID));
+  }
+
+  @Test
   void deleteUser_shouldThrowException_whenNoUserInDb() {
     when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
@@ -75,7 +87,8 @@ class UserServiceImplTest {
     when(userRepository.existsByIdAndBooksId(USER_ID, BOOK_ID)).thenReturn(false);
     when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
     when(bookService.getBookById(BOOK_ID)).thenReturn(bookDto);
-    when(userRepository.countBookRelationsById(USER_ID.toString())).thenReturn(userBooksQuantity);
+    when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
+        .thenReturn(userBooksQuantity);
 
     userService.borrowBook(USER_ID, BOOK_ID);
 
@@ -92,7 +105,8 @@ class UserServiceImplTest {
     when(userRepository.existsByIdAndBooksId(USER_ID, BOOK_ID)).thenReturn(false);
     when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
     when(bookService.getBookById(BOOK_ID)).thenReturn(bookDto);
-    when(userRepository.countBookRelationsById(USER_ID.toString())).thenReturn(maxBooksQuantity);
+    when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
+        .thenReturn(maxBooksQuantity);
 
     assertThrows(
         UserBookRelationConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
@@ -108,7 +122,8 @@ class UserServiceImplTest {
     when(userRepository.existsByIdAndBooksId(USER_ID, BOOK_ID)).thenReturn(false);
     when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
     when(bookService.getBookById(BOOK_ID)).thenReturn(bookDto);
-    when(userRepository.countBookRelationsById(USER_ID.toString())).thenReturn(userBooksQuantity);
+    when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
+        .thenReturn(userBooksQuantity);
 
     assertThrows(BookAmountConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
   }

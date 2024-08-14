@@ -1,5 +1,6 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.nerdysoft.library.service.BookService;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -83,7 +83,7 @@ public class BookController {
             content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE)))
       })
   @DeleteMapping(value = V1 + BOOK_PATH)
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseStatus(NO_CONTENT)
   public void deleteBookById(@PathVariable UUID bookId) {
     bookService.deleteBookById(bookId);
   }

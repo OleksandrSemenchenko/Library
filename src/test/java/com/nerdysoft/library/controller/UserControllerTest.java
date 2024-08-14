@@ -3,6 +3,7 @@ package com.nerdysoft.library.controller;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,6 +36,30 @@ class UserControllerTest {
   @Autowired private MockMvc mockMvc;
 
   @MockBean private UserService userService;
+
+  @Test
+  void deleteUser_shouldReturnStatus409AndErrorBody_whenUserHasBorrowedBooks() throws Exception {
+    doThrow(UserBookRelationConflictException.class).when(userService).deleteUser(USER_ID);
+
+    mockMvc
+        .perform(delete(V1 + USER_PATH, USER_ID))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.errorCode", Matchers.is(409)))
+        .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  @Test
+  void deleteUser_shouldReturnStatus404AndErrorBody_whenNoUserInDb() throws Exception {
+    doThrow(UserNotFoundException.class).when(userService).deleteUser(USER_ID);
+
+    mockMvc
+        .perform(delete(V1 + USER_PATH, USER_ID))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.errorCode", Matchers.is(404)))
+        .andExpect(jsonPath("$.timestamp").exists());
+  }
 
   @Test
   void borrowBook_shouldThrowException_whenUserHasMaxBooksQuantity() throws Exception {

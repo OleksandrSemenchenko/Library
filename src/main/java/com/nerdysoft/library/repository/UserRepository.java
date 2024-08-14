@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
       @Param("relationId") String relationId);
 
   @Query(value = "SELECT COUNT(id) FROM users_books ub WHERE user_id = :userId", nativeQuery = true)
-  int countBookRelationsById(@Param("userId") String userId);
+  int countBookRelationsByUserId(@Param("userId") String userId);
 
   boolean existsByIdAndBooksId(UUID userId, UUID bookId);
 }

@@ -16,6 +16,8 @@ public class ExceptionMessages {
   public static final String NO_BOOKS = "No available books";
   public static final String MAX_USER_BOOKS_QUANTITY = "A user can't borrow books more than %s";
   public static final String ZERO_BOOKS_AMOUNT = "The books amount cannot be less than zero";
+  public static final String USER_BORROWED_BOOKS =
+      "The user with id=%s has %s borrowed books and cannot be deleted";
 
   private ExceptionMessages() {}
 }

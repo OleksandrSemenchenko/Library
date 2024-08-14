@@ -1,5 +1,6 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -54,7 +55,10 @@ public class UserController {
   private final UserService userService;
 
   @DeleteMapping(value = V1 + USER_PATH)
-  public void deleteUser(@PathVariable UUID userId) {}
+  @ResponseStatus(NO_CONTENT)
+  public void deleteUser(@PathVariable UUID userId) {
+    userService.deleteUser(userId);
+  }
 
   @Operation(
       summary = "Relates a user with a book",
