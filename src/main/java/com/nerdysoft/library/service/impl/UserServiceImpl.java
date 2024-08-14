@@ -14,6 +14,7 @@ import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.UserService;
 import com.nerdysoft.library.service.dto.BookDto;
 import com.nerdysoft.library.service.dto.UserDto;
+import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
   private int maxBooksQuantityForUser;
 
   @Override
+  @Transactional
   public void borrowBook(UUID userId, UUID bookId) {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
