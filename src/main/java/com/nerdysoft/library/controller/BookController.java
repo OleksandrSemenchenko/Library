@@ -1,5 +1,7 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +59,10 @@ public class BookController {
             description = "Not valid data in a request body",
             content = @Content(examples = @ExampleObject(ADD_BOOK_BAD_REQUEST_ERROR_EXAMPLE)))
       })
-  @PostMapping(value = V1 + BOOKS_PATH)
+  @PostMapping(
+      value = V1 + BOOKS_PATH,
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<BookDto> addBook(@RequestBody @Validated BookDto bookDto) {
     BookDto addedBook = bookService.addBook(bookDto);
     return ResponseEntity.ok(addedBook);

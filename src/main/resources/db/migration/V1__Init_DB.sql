@@ -15,7 +15,7 @@ CREATE TABLE books(
 	PRIMARY KEY(id)
 );
 
-CREATE index books_ta_idx ON books(title, author);
+CREATE index books_ta_idx ON books(author, title);
 
 CREATE TABLE users_books (
 	id VARCHAR(36),
