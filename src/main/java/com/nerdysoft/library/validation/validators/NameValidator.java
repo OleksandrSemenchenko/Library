@@ -1,11 +1,11 @@
 package com.nerdysoft.library.validation.validators;
 
-import com.nerdysoft.library.validation.AuthorName;
+import com.nerdysoft.library.validation.Name;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
-public class AuthorNameValidator implements ConstraintValidator<AuthorName, String> {
+public class NameValidator implements ConstraintValidator<Name, String> {
 
   @Override
   public boolean isValid(String name, ConstraintValidatorContext context) {
@@ -25,8 +25,8 @@ public class AuthorNameValidator implements ConstraintValidator<AuthorName, Stri
   }
 
   private boolean isFirstLetterOfEachWordUpperCase(String name) {
-    String[] fistnameAndSurname = name.split(" ");
-    return Arrays.stream(fistnameAndSurname)
+    String[] firstnameAndSurname = name.split(" ");
+    return Arrays.stream(firstnameAndSurname)
         .allMatch(word -> Character.isUpperCase(word.charAt(0)));
   }
 }

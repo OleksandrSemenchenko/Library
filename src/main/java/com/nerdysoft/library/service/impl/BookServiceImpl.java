@@ -17,6 +17,7 @@ public class BookServiceImpl implements BookService {
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
 
+  // TODO if amount is null
   @Override
   @Transactional
   public BookDto addBook(BookDto bookDto) {

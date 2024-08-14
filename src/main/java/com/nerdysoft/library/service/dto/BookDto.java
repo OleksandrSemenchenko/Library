@@ -1,7 +1,8 @@
 package com.nerdysoft.library.service.dto;
 
-import com.nerdysoft.library.validation.AuthorName;
 import com.nerdysoft.library.validation.BookTitle;
+import com.nerdysoft.library.validation.Name;
+import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class BookDto {
 
   @BookTitle private String title;
 
-  @AuthorName private String author;
-  private Integer amount;
+  @Name private String author;
+
+  @Positive private Integer amount;
 }
