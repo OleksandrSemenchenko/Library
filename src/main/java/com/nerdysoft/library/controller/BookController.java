@@ -51,7 +51,7 @@ public class BookController {
           "details": "The book with id=2decc0bd-9730-4145-b18e-94029dfb961f cannot be deleted because it is borrowed"
       }
       """;
-  private static final String NOT_FOUND_ERROR_EXAMPLE =
+  private static final String BOOK_NOT_FOUND_ERROR_EXAMPLE =
       """
       {
           "timestamp": "2024-08-14T14:42:59.607396668",
@@ -80,7 +80,7 @@ public class BookController {
         @ApiResponse(
             responseCode = "404",
             description = "The book not found",
-            content = @Content(examples = @ExampleObject(NOT_FOUND_ERROR_EXAMPLE)))
+            content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE)))
       })
   @DeleteMapping(value = V1 + BOOK_PATH)
   @ResponseStatus(HttpStatus.NO_CONTENT)
