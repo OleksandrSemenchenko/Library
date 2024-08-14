@@ -40,8 +40,35 @@ public class UserController {
       }
       """;
 
+  private static final String CONFLICT_ERROR_EXAMPLE =
+      """
+      {
+          "timestamp": "2024-08-14T20:52:36.190695546",
+          "errorCode": 409,
+          "details": "User with id=f0d9bdfc-38e7-4a34-b07f-8216574efbb5 is already related to
+      book with id=2decc0bd-9730-4145-b18e-94029dfb961f"
+      }
+      """;
+
   private final UserService userService;
 
+  @Operation(
+      summary = "Relates a user with a book",
+      operationId = "borrowBook",
+      description = "Creates in a database relation between a user and a book",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Creates successfully a user book relation"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "A user or a book not found",
+            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Business rules conflicts",
+            content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
+      })
   @PutMapping(value = V1 + USER_PATH + BOOK_PATH)
   @ResponseStatus(OK)
   public void borrowBook(@PathVariable UUID userId, @PathVariable UUID bookId) {

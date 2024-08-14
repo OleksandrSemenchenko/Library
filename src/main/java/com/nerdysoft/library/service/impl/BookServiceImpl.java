@@ -68,7 +68,9 @@ public class BookServiceImpl implements BookService {
   }
 
   /**
-   * Creates a book if it doesn't exist or increases its amount in another case.
+   * If a book is added with the same title and author that already exists in the database, the
+   * amount of the existing book is increased by an amount in a request body. A new book is created
+   * if the database has no book with such a title and an author.
    *
    * @param bookDto - a book
    * @return - a created or updated book

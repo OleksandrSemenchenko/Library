@@ -15,6 +15,6 @@ spring:
   flyway:
     enabled: true
     validate-on-migrate: true
-
+    
 application:
   max-books-quantity-for-user: 10

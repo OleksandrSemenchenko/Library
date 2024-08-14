@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserBookRelationConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserNotFoundException;
@@ -48,7 +49,7 @@ class UserControllerTest {
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenNoBooks() throws Exception {
+  void borrowBook_shouldThrowException_whenNoAvailableBooks() throws Exception {
     doThrow(BooksAmountConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
 
     mockMvc
@@ -56,6 +57,18 @@ class UserControllerTest {
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.details").hasJsonPath())
         .andExpect(jsonPath("$.errorCode", Matchers.is(409)))
+        .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  @Test
+  void borrowBook_shouldThrowException_whenNoBookInDb() throws Exception {
+    doThrow(BookNotFoundException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.errorCode", Matchers.is(404)))
         .andExpect(jsonPath("$.timestamp").exists());
   }
 

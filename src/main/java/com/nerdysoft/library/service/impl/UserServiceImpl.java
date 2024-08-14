@@ -33,6 +33,14 @@ public class UserServiceImpl implements UserService {
   @Value("${application.max-books-quantity-for-user}")
   private int maxBooksQuantityForUser;
 
+  /**
+   * Creates a relation between a user and a book if the book amount is greater than zero and the
+   * user has fewer books than the maximum allowed book quantity. When the relation is created the
+   * book amount decreases by one.
+   *
+   * @param userId - a user ID
+   * @param bookId - a book ID
+   */
   @Override
   @Transactional
   public void borrowBook(UUID userId, UUID bookId) {
