@@ -67,12 +67,12 @@ public class UserServiceImpl implements UserService {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
     BookDto bookDto = bookService.getBookById(bookId);
-    int userBooksQuantity = userRepository.countBookRelationsByUserId(userId.toString());
+    int userBookQuantity = userRepository.countBookRelationsByUserId(userId.toString());
 
     if (bookDto.getAmount() == 0) {
       log.debug(ExceptionMessages.NO_BOOKS);
       throw new BookAmountConflictException(ExceptionMessages.NO_BOOKS);
-    } else if (userBooksQuantity >= maxBookQuantityForUser) {
+    } else if (userBookQuantity >= maxBookQuantityForUser) {
       log.debug(MAX_USER_BOOKS_QUANTITY.formatted(maxBookQuantityForUser));
       throw new UserBookRelationConflictException(
           MAX_USER_BOOKS_QUANTITY.formatted(maxBookQuantityForUser));
