@@ -1,5 +1,7 @@
 package com.nerdysoft.library.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.nerdysoft.library.service.UserService;
 import com.nerdysoft.library.service.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +27,7 @@ public class UserController {
   private static final String V1 = "/v1";
   private static final String USER_ID_PATH = "/users/{userId}";
 
-  private static final String USER_NOT_FOUND_ERROR =
+  private static final String USER_NOT_FOUND_ERROR_EXAMPLE =
       """
       {
           "timestamp": "2024-08-13T15:26:57.322006719",
@@ -45,9 +47,9 @@ public class UserController {
         @ApiResponse(
             responseCode = "404",
             description = "User not found",
-            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR)))
+            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
       })
-  @GetMapping(value = V1 + USER_ID_PATH)
+  @GetMapping(value = V1 + USER_ID_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
     UserDto user = userService.getUser(userId);
     return ResponseEntity.ok(user);

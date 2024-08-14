@@ -1,3 +1,8 @@
 package com.nerdysoft.library.service;
 
-public interface BookService {}
+import com.nerdysoft.library.service.dto.BookDto;
+
+public interface BookService {
+
+  BookDto addBook(BookDto book);
+}

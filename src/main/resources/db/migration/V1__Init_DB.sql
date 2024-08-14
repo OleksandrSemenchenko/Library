@@ -12,11 +12,10 @@ CREATE TABLE books(
 	title VARCHAR(256) NOT NULL,
 	author VARCHAR(256) NOT NULL,
 	amount INTEGER,
-	user_id VARCHAR(36),
 	PRIMARY KEY(id)
 );
 
-CREATE index books_ta_idx ON books(title, author);
+CREATE index books_ta_idx ON books(author, title);
 
 CREATE TABLE users_books (
 	id VARCHAR(36),

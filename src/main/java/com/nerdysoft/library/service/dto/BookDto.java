@@ -1,7 +1,8 @@
 package com.nerdysoft.library.service.dto;
 
+import com.nerdysoft.library.validation.BookTitle;
 import com.nerdysoft.library.validation.Name;
-import java.time.LocalDate;
+import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class BookDto {
 
   private UUID id;
 
-  @Name private String name;
-  private LocalDate membershipDate;
+  @BookTitle private String title;
+
+  @Name private String author;
+
+  @Positive private Integer amount;
 }
