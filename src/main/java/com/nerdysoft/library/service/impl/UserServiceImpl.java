@@ -4,7 +4,7 @@ import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.MAX_USER_
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.USER_BOOK_RELATION_ALREADY_EXISTS;
 
 import com.nerdysoft.library.exceptionhandler.ExceptionMessages;
-import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserBookRelationConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserNotFoundException;
 import com.nerdysoft.library.mapper.UserMapper;
@@ -30,8 +30,8 @@ public class UserServiceImpl implements UserService {
   private final UserMapper userMapper;
   private final BookService bookService;
 
-  @Value("${application.max-books-quantity-for-user}")
-  private int maxBooksQuantityForUser;
+  @Value("${application.max-book-quantity-for-user}")
+  private int maxBookQuantityForUser;
 
   /**
    * Creates a relation between a user and a book if the book amount is greater than zero and the
@@ -51,14 +51,14 @@ public class UserServiceImpl implements UserService {
 
     if (bookDto.getAmount() == 0) {
       log.debug(ExceptionMessages.NO_BOOKS);
-      throw new BooksAmountConflictException(ExceptionMessages.NO_BOOKS);
-    } else if (userBooksQuantity >= maxBooksQuantityForUser) {
+      throw new BookAmountConflictException(ExceptionMessages.NO_BOOKS);
+    } else if (userBooksQuantity >= maxBookQuantityForUser) {
       log.debug(MAX_USER_BOOKS_QUANTITY);
       throw new UserBookRelationConflictException(
-          MAX_USER_BOOKS_QUANTITY.formatted(maxBooksQuantityForUser));
+          MAX_USER_BOOKS_QUANTITY.formatted(maxBookQuantityForUser));
     } else {
       createUserBookRelation(userId, bookId);
-      bookService.decreaseBooksAmountByOne(bookId);
+      bookService.decreaseBookAmountByOne(bookId);
     }
   }
 

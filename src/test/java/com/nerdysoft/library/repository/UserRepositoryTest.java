@@ -34,9 +34,9 @@ class UserRepositoryTest {
   void countBookRelationsById_shouldCountRelations_whenUserBookRelationsExist() {
     int expectedRelationsQuantity = 1;
 
-    int actualRelationsQuantity = userRepository.countBookRelationsById(USER_ID.toString());
+    int actualRelationQuantity = userRepository.countBookRelationsById(USER_ID.toString());
 
-    assertEquals(expectedRelationsQuantity, actualRelationsQuantity);
+    assertEquals(expectedRelationsQuantity, actualRelationQuantity);
   }
 
   @Test

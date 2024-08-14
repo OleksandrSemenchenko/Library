@@ -7,9 +7,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.nerdysoft.library.TestDataGenerator;
-import com.nerdysoft.library.exceptionhandler.exceptions.BookDeletionConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
-import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.DeleteBookConflictException;
 import com.nerdysoft.library.mapper.BookMapper;
 import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
@@ -42,7 +42,7 @@ class BookServiceImplTest {
   }
 
   @Test
-  void decreaseBooksAmountByOne_shouldDecreaseAmountByOne_whenBooksAmountMoreThanZero() {
+  void decreaseBookAmountByOne_shouldDecreaseAmountByOne_whenBooksAmountMoreThanZero() {
     Book book = TestDataGenerator.generateBook();
     BookDto expectedBookDto = TestDataGenerator.generateBookDto();
     expectedBookDto.setAmount(0);
@@ -50,20 +50,20 @@ class BookServiceImplTest {
     when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(book));
     when(bookRepository.save(book)).thenReturn(book);
 
-    BookDto updatedBook = bookService.decreaseBooksAmountByOne(BOOK_ID);
+    BookDto updatedBook = bookService.decreaseBookAmountByOne(BOOK_ID);
 
     verifyBook(expectedBookDto, updatedBook);
   }
 
   @Test
-  void decreaseBooksAmountByOne_shouldThrowException_whenBooksAmountIsZero() {
+  void decreaseBookAmountByOne_shouldThrowException_whenBooksAmountIsZero() {
     Book book = TestDataGenerator.generateBook();
     book.setAmount(0);
 
     when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(book));
 
     assertThrows(
-        BooksAmountConflictException.class, () -> bookService.decreaseBooksAmountByOne(BOOK_ID));
+        BookAmountConflictException.class, () -> bookService.decreaseBookAmountByOne(BOOK_ID));
   }
 
   @Test
@@ -109,7 +109,7 @@ class BookServiceImplTest {
   void deleteBookById_shouldThrowException_whenBookIsBorrowed() {
     when(bookRepository.isBookRelatedToAnyUser(BOOK_ID.toString())).thenReturn(true);
 
-    assertThrows(BookDeletionConflictException.class, () -> bookService.deleteBookById(BOOK_ID));
+    assertThrows(DeleteBookConflictException.class, () -> bookService.deleteBookById(BOOK_ID));
   }
 
   @Test

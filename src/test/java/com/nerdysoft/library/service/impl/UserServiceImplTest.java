@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.nerdysoft.library.TestDataGenerator;
-import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserBookRelationConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserNotFoundException;
 import com.nerdysoft.library.mapper.UserMapper;
@@ -45,7 +45,7 @@ class UserServiceImplTest {
   void setUp() {
     UserMapper userMapper = Mappers.getMapper(UserMapper.class);
     ReflectionTestUtils.setField(userService, "userMapper", userMapper);
-    ReflectionTestUtils.setField(userService, "maxBooksQuantityForUser", 10);
+    ReflectionTestUtils.setField(userService, "maxBookQuantityForUser", 10);
   }
 
   @Test
@@ -62,7 +62,7 @@ class UserServiceImplTest {
     userService.borrowBook(USER_ID, BOOK_ID);
 
     verify(userRepository).createUserBookRelation(anyString(), anyString(), anyString());
-    verify(bookService).decreaseBooksAmountByOne(BOOK_ID);
+    verify(bookService).decreaseBookAmountByOne(BOOK_ID);
   }
 
   @Test
@@ -92,8 +92,7 @@ class UserServiceImplTest {
     when(bookService.getBookById(BOOK_ID)).thenReturn(bookDto);
     when(userRepository.countBookRelationsById(USER_ID.toString())).thenReturn(userBooksQuantity);
 
-    assertThrows(
-        BooksAmountConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
+    assertThrows(BookAmountConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
   }
 
   @Test

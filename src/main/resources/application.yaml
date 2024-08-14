@@ -21,4 +21,4 @@ logging:
     root: "warn"
 
 application:
-  max-books-quantity-for-user: 10
+  max-book-quantity-for-user: 10

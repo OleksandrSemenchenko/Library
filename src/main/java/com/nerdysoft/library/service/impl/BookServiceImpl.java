@@ -4,9 +4,9 @@ import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_IS_B
 import static com.nerdysoft.library.exceptionhandler.ExceptionMessages.BOOK_NOT_FOUND;
 
 import com.nerdysoft.library.exceptionhandler.ExceptionMessages;
-import com.nerdysoft.library.exceptionhandler.exceptions.BookDeletionConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
-import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
+import com.nerdysoft.library.exceptionhandler.exceptions.DeleteBookConflictException;
 import com.nerdysoft.library.mapper.BookMapper;
 import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
@@ -28,13 +28,13 @@ public class BookServiceImpl implements BookService {
   private final BookMapper bookMapper;
 
   @Override
-  public BookDto decreaseBooksAmountByOne(UUID bookId) {
+  public BookDto decreaseBookAmountByOne(UUID bookId) {
     Book book = findBookById(bookId);
     int booksAmount = book.getAmount();
 
     if (booksAmount == 0) {
       log.debug(ExceptionMessages.ZERO_BOOKS_AMOUNT);
-      throw new BooksAmountConflictException(ExceptionMessages.ZERO_BOOKS_AMOUNT);
+      throw new BookAmountConflictException(ExceptionMessages.ZERO_BOOKS_AMOUNT);
     }
     booksAmount--;
     book.setAmount(booksAmount);
@@ -58,7 +58,7 @@ public class BookServiceImpl implements BookService {
   public void deleteBookById(UUID bookId) {
     if (bookRepository.isBookRelatedToAnyUser(bookId.toString())) {
       log.debug(BOOK_IS_BORROWED.formatted(bookId));
-      throw new BookDeletionConflictException(BOOK_IS_BORROWED.formatted(bookId));
+      throw new DeleteBookConflictException(BOOK_IS_BORROWED.formatted(bookId));
     }
     Book book =
         bookRepository
@@ -84,7 +84,7 @@ public class BookServiceImpl implements BookService {
     if (databaseBookOptional.isEmpty()) {
       return createBook(bookDto);
     } else {
-      return increaseBooksAmount(databaseBookOptional.get(), bookDto.getAmount());
+      return increaseBookAmount(databaseBookOptional.get(), bookDto.getAmount());
     }
   }
 
@@ -94,7 +94,7 @@ public class BookServiceImpl implements BookService {
     return bookMapper.toDto(savedBook);
   }
 
-  private BookDto increaseBooksAmount(Book book, int booksAmount) {
+  private BookDto increaseBookAmount(Book book, int booksAmount) {
     booksAmount += book.getAmount();
     book.setAmount(booksAmount);
     Book updatedBook = bookRepository.save(book);

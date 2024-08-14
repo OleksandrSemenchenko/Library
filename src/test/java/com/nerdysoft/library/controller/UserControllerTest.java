@@ -6,8 +6,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.nerdysoft.library.exceptionhandler.exceptions.BookAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.BookNotFoundException;
-import com.nerdysoft.library.exceptionhandler.exceptions.BooksAmountConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserBookRelationConflictException;
 import com.nerdysoft.library.exceptionhandler.exceptions.UserNotFoundException;
 import com.nerdysoft.library.service.UserService;
@@ -50,7 +50,7 @@ class UserControllerTest {
 
   @Test
   void borrowBook_shouldThrowException_whenNoAvailableBooks() throws Exception {
-    doThrow(BooksAmountConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+    doThrow(BookAmountConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
 
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
