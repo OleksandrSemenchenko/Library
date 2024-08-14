@@ -12,7 +12,7 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
   @Query(
       value = "SELECT EXISTS (SELECT ub.* FROM users_books ub WHERE ub.book_id = :bookId)",
       nativeQuery = true)
-  boolean isBookRelatedToAnyUser(@Param("bookId") UUID bookId);
+  boolean isBookRelatedToAnyUser(@Param("bookId") String bookId);
 
   Optional<Book> findByAuthorAndTitle(String author, String title);
 }

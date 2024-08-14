@@ -26,14 +26,14 @@ class BookRepositoryTest {
 
   @Test
   void isBookRelatedToAnyUser_shouldReturnFalse_whenBookHasNoRelation() {
-    boolean hasBookRelation = bookRepository.isBookRelatedToAnyUser(BOOK_ID);
+    boolean hasBookRelation = bookRepository.isBookRelatedToAnyUser(BOOK_ID.toString());
 
     assertFalse(hasBookRelation);
   }
 
   @Test
   void isBookRelatedToAnyUser_shouldReturnTrue_whenBookHasRelation() {
-    boolean hasBookRelation = bookRepository.isBookRelatedToAnyUser(BOOK_ID_OF_USER);
+    boolean hasBookRelation = bookRepository.isBookRelatedToAnyUser(BOOK_ID_OF_USER.toString());
 
     assertTrue(hasBookRelation);
   }

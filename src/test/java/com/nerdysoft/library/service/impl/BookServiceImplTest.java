@@ -44,7 +44,7 @@ class BookServiceImplTest {
   void deleteBookById_shouldDeleteBook_whenBookIsInDb() {
     Book book = TestDataGenerator.generateBook();
 
-    when(bookRepository.isBookRelatedToAnyUser(book.getId())).thenReturn(false);
+    when(bookRepository.isBookRelatedToAnyUser(book.getId().toString())).thenReturn(false);
     when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
 
     bookService.deleteBookById(book.getId());
@@ -54,7 +54,7 @@ class BookServiceImplTest {
 
   @Test
   void deleteBookById_shouldThrowException_whenNoBookInDb() {
-    when(bookRepository.isBookRelatedToAnyUser(BOOK_ID)).thenReturn(false);
+    when(bookRepository.isBookRelatedToAnyUser(BOOK_ID.toString())).thenReturn(false);
     when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.empty());
 
     assertThrows(BookNotFoundException.class, () -> bookService.deleteBookById(BOOK_ID));
@@ -62,7 +62,7 @@ class BookServiceImplTest {
 
   @Test
   void deleteBookById_shouldThrowException_whenBookIsBorrowed() {
-    when(bookRepository.isBookRelatedToAnyUser(BOOK_ID)).thenReturn(true);
+    when(bookRepository.isBookRelatedToAnyUser(BOOK_ID.toString())).thenReturn(true);
 
     assertThrows(DeleteForbiddenException.class, () -> bookService.deleteBookById(BOOK_ID));
   }
