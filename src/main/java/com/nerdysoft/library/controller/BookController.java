@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ public class BookController {
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
   private static final String BOOKS_BORROWED_PATH = "/books/borrowed";
-  private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String BOOK_ID_PATH = "/books/{bookId}";
   private static final String USER_NAME_PATH = "/users/{userName}";
 
   private static final String BAD_REQUEST_ERROR_EXAMPLE =
@@ -75,6 +76,12 @@ public class BookController {
       """;
 
   private final BookService bookService;
+
+  @PutMapping(value = V1 + BOOK_ID_PATH, consumes = APPLICATION_JSON_VALUE)
+  public void updateBook(@RequestBody @Validated BookDto bookDto, @PathVariable UUID bookId) {
+    bookDto.setId(bookId);
+    bookService.updateBook(bookDto);
+  }
 
   @Operation(
       summary = "Returns all borrowed books",
@@ -121,7 +128,7 @@ public class BookController {
             description = "The book not found",
             content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE)))
       })
-  @DeleteMapping(value = V1 + BOOK_PATH)
+  @DeleteMapping(value = V1 + BOOK_ID_PATH)
   @ResponseStatus(NO_CONTENT)
   public void deleteBookById(@PathVariable UUID bookId) {
     bookService.deleteBookById(bookId);

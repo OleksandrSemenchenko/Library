@@ -1,8 +1,8 @@
 package com.nerdysoft.library.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nerdysoft.library.validation.AuthorName;
 import com.nerdysoft.library.validation.BookTitle;
-import com.nerdysoft.library.validation.Name;
 import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class BookDto {
 
   @BookTitle private String title;
 
-  @Name private String author;
+  @AuthorName private String author;
 
   @Positive private Integer amount;
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = NameValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Name {
+public @interface AuthorName {
 
   String message() default
       "The name should contain two capital words with name and surname and space between them";

@@ -33,6 +33,14 @@ public class BookServiceImpl implements BookService {
   private final BookMapper bookMapper;
 
   @Override
+  public BookDto updateBook(BookDto bookDto) {
+    Book book = findBookById(bookDto.getId());
+    Book updatedBook = bookMapper.mergeWithDto(bookDto, book);
+    Book savedBook = bookRepository.save(updatedBook);
+    return bookMapper.toDto(savedBook);
+  }
+
+  @Override
   public Page<BookDto> getAllBorrowedBooks(Pageable pageable) {
     List<Book> books = bookRepository.findAllBooksRelatedToUsers();
     List<BookDto> bookDtos = bookMapper.toDtoList(books);

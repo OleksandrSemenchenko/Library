@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookService {
 
+  BookDto updateBook(BookDto bookDto);
+
   Page<BookDto> getAllBorrowedBooks(Pageable pageable);
 
   BookWrapper getBooksBorrowedByUser(String userName);

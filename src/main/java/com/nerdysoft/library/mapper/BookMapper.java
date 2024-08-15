@@ -5,6 +5,7 @@ import com.nerdysoft.library.service.dto.BookDto;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.springframework.beans.BeanUtils;
 
 /**
  * Mapper interface for the Book entity. The interface definition is used by MapStruct processor to
@@ -21,4 +22,9 @@ public interface BookMapper {
   Book toEntity(BookDto bookDto);
 
   BookDto toDto(Book book);
+
+  default Book mergeWithDto(BookDto bookDto, Book book) {
+    BeanUtils.copyProperties(this.toEntity(bookDto), book);
+    return book;
+  }
 }

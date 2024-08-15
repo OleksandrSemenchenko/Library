@@ -47,6 +47,20 @@ class UserControllerTest {
   @MockBean private UserService userService;
 
   @Test
+  void updateUser_shouldReturnStatus400AndErrorBody_whenUserNameIsNotValid() throws Exception {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+    userDto.setName(null);
+    String requestBody = objectMapper.writeValueAsString(userDto);
+
+    mockMvc
+        .perform(post(V1 + USERS_PATH).contentType(APPLICATION_JSON).content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.errorCode", Matchers.is(400)))
+        .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  @Test
   void updateUser_shouldReturnStatus404AndErrorBody_whenNoUserInDb() throws Exception {
     UserDto userDto = TestDataGenerator.generateUserDto();
     String requestBody = objectMapper.writeValueAsString(userDto);

@@ -78,6 +78,10 @@ public class UserController {
       responses = {
         @ApiResponse(responseCode = "200", description = "A user was updated successfully"),
         @ApiResponse(
+            responseCode = "400",
+            description = "A user name is not valid",
+            content = @Content(examples = @ExampleObject(NOT_VALID_USER_NAME_ERROR_EXAMPLE))),
+        @ApiResponse(
             responseCode = "404",
             description = "A user not found",
             content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
