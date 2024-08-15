@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
   private int maxBookQuantityForUser;
 
   @Override
+  @Transactional
   public UserDto updateUser(UserDto userDto) {
     User user = findUserById(userDto.getId());
     User updatedUser = userMapper.mergeWithDto(userDto, user);
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public UserDto createUser(UserDto userDto) {
     userDto.setId(null);
     userDto.setMembershipDate(null);
