@@ -1,6 +1,6 @@
 package com.nerdysoft.library.service.dto;
 
-import com.nerdysoft.library.validation.Name;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -16,6 +16,6 @@ public class UserDto {
 
   private UUID id;
 
-  @Name private String name;
+  @NotBlank private String name;
   private LocalDate membershipDate;
 }

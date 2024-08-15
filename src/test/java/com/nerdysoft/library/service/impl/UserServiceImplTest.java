@@ -2,6 +2,7 @@ package com.nerdysoft.library.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,6 +48,19 @@ class UserServiceImplTest {
     UserMapper userMapper = Mappers.getMapper(UserMapper.class);
     ReflectionTestUtils.setField(userService, "userMapper", userMapper);
     ReflectionTestUtils.setField(userService, "maxBookQuantityForUser", 10);
+  }
+
+  @Test
+  void createUser_shouldCreate_whenRequested() {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+    User user = TestDataGenerator.generateUser();
+
+    when(userRepository.save(any(User.class))).thenReturn(user);
+
+    UserDto createdUser = userService.createUser(userDto);
+
+    UserDto expectedUserDto = TestDataGenerator.generateUserDto();
+    assertEquals(expectedUserDto, createdUser);
   }
 
   @Test
