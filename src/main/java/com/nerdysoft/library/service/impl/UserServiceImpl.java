@@ -35,8 +35,17 @@ public class UserServiceImpl implements UserService {
   private int maxBookQuantityForUser;
 
   @Override
+  public UserDto updateUser(UserDto userDto) {
+    User user = findUserById(userDto.getId());
+    User updatedUser = userMapper.mergeWithDto(userDto, user);
+    User savedUser = userRepository.save(updatedUser);
+    return userMapper.toDto(savedUser);
+  }
+
+  @Override
   public UserDto createUser(UserDto userDto) {
     userDto.setId(null);
+    userDto.setMembershipDate(null);
     User newUser = userMapper.toEntity(userDto);
     User savedUser = userRepository.save(newUser);
     return userMapper.toDto(savedUser);

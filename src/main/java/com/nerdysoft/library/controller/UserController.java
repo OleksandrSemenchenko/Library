@@ -71,6 +71,13 @@ public class UserController {
 
   private final UserService userService;
 
+  @PutMapping(value = V1 + USER_ID_PATH, consumes = APPLICATION_JSON_VALUE)
+  @ResponseStatus(OK)
+  public void updateUser(@PathVariable UUID userId, @RequestBody @Validated UserDto userDto) {
+    userDto.setId(userId);
+    userService.updateUser(userDto);
+  }
+
   @Operation(
       summary = "Creates user",
       operationId = "createUser",
