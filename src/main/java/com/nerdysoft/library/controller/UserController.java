@@ -71,6 +71,17 @@ public class UserController {
 
   private final UserService userService;
 
+  @Operation(
+      summary = "Updates a user",
+      operationId = "updateUser",
+      description = "Updates all user fields",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "A user was updated successfully"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "A user not found",
+            content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
+      })
   @PutMapping(value = V1 + USER_ID_PATH, consumes = APPLICATION_JSON_VALUE)
   @ResponseStatus(OK)
   public void updateUser(@PathVariable UUID userId, @RequestBody @Validated UserDto userDto) {
