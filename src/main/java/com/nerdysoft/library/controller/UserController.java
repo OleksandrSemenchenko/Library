@@ -10,15 +10,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.net.URI;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * The REST controller supports end points to manage users.
@@ -30,8 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private static final String V1 = "/v1";
-  private static final String USER_PATH = "/users/{userId}";
+  private static final String USER_ID_PATH = "/users/{userId}";
   private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String USERS_PATH = "/users";
 
   private static final String USER_NOT_FOUND_ERROR_EXAMPLE =
       """
@@ -52,7 +58,39 @@ public class UserController {
       }
       """;
 
+  private static final String NOT_VALID_USER_NAME_ERROR_EXAMPLE =
+      """
+        {
+            "timestamp": "2024-08-16T00:12:43.422236202",
+            "errorCode": 400,
+            "details": {
+                "name": "must not be blank"
+            }
+        }
+        """;
+
   private final UserService userService;
+
+  @Operation(
+      summary = "Creates user",
+      operationId = "createUser",
+      responses = {
+        @ApiResponse(responseCode = "201", description = "A user was created successfully"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "A request body contains a not valid username",
+            content = @Content(examples = @ExampleObject(NOT_VALID_USER_NAME_ERROR_EXAMPLE)))
+      })
+  @PostMapping(value = V1 + USERS_PATH, consumes = APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> createUser(@RequestBody @Validated UserDto userDto) {
+    UserDto createdUser = userService.createUser(userDto);
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentServletMapping()
+            .path(V1 + USER_ID_PATH)
+            .buildAndExpand(createdUser.getId())
+            .toUri();
+    return ResponseEntity.created(location).build();
+  }
 
   @Operation(
       summary = "Deletes a user",
@@ -69,7 +107,7 @@ public class UserController {
             description = "A user has borrowed books",
             content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
       })
-  @DeleteMapping(value = V1 + USER_PATH)
+  @DeleteMapping(value = V1 + USER_ID_PATH)
   @ResponseStatus(NO_CONTENT)
   public void deleteUser(@PathVariable UUID userId) {
     userService.deleteUser(userId);
@@ -92,7 +130,7 @@ public class UserController {
             description = "Business rules conflicts",
             content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
       })
-  @PutMapping(value = V1 + USER_PATH + BOOK_PATH)
+  @PutMapping(value = V1 + USER_ID_PATH + BOOK_PATH)
   @ResponseStatus(OK)
   public void borrowBookByUser(@PathVariable UUID userId, @PathVariable UUID bookId) {
     userService.borrowBookByUser(userId, bookId);
@@ -109,7 +147,7 @@ public class UserController {
             description = "User not found",
             content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
       })
-  @GetMapping(value = V1 + USER_PATH, produces = APPLICATION_JSON_VALUE)
+  @GetMapping(value = V1 + USER_ID_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
     UserDto user = userService.getUserById(userId);
     return ResponseEntity.ok(user);

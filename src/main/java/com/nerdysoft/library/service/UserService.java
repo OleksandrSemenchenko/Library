@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public interface UserService {
 
+  UserDto createUser(UserDto userDto);
+
   void deleteUser(UUID userId);
 
   void borrowBookByUser(UUID userId, UUID bookId);

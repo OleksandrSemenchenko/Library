@@ -34,6 +34,14 @@ public class UserServiceImpl implements UserService {
   @Value("${application.max-book-quantity-for-user}")
   private int maxBookQuantityForUser;
 
+  @Override
+  public UserDto createUser(UserDto userDto) {
+    userDto.setId(null);
+    User newUser = userMapper.toEntity(userDto);
+    User savedUser = userRepository.save(newUser);
+    return userMapper.toDto(savedUser);
+  }
+
   /**
    * Deletes a user that has no borrowed books.
    *
