@@ -7,10 +7,12 @@ package com.nerdysoft.library.exceptionhandler;
  */
 public class ExceptionMessages {
 
-  public static final String USER_NOT_FOUND = "User with id=%s not found";
+  public static final String USER_NOT_FOUND_BY_ID = "User with id=%s not found";
   public static final String BOOK_IS_BORROWED =
       "The book with id=%s cannot be deleted because it is borrowed";
   public static final String BOOK_NOT_FOUND = "Book with id=%s nod found";
+  public static final String BOOK_NOT_FOUND_BY_USER_NAME =
+      "Books borrowed by user with name '%s' not found";
   public static final String USER_BOOK_RELATION_ALREADY_EXISTS =
       "User with id=%s is already related to book with id=%s";
   public static final String NO_BOOKS = "No available books";

@@ -2,6 +2,7 @@ package com.nerdysoft.library.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,13 +30,27 @@ class BookControllerTest {
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
   private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String USER_NAME_PATH = "/users/{userName}";
   private static final UUID BOOK_ID = UUID.randomUUID();
+  private static final String USER_NAME = "John Doe";
 
   @Autowired private MockMvc mockMvc;
 
   @MockBean private BookService bookService;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @Test
+  void getBooksBorrowedByUser_shouldReturnStatus404_whenNoBorrowedBooks() throws Exception {
+    when(bookService.getBooksBorrowedByUser(USER_NAME)).thenThrow(BookNotFoundException.class);
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.get(V1 + USER_NAME_PATH + BOOKS_PATH, USER_NAME))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.timestamp").exists())
+        .andExpect(jsonPath("$.errorCode", is(404)));
+  }
 
   @Test
   void deleteBookById_shouldReturnStatus404_whenNoBookInDb() throws Exception {

@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public void borrowBook(UUID userId, UUID bookId) {
+  public void borrowBookByUser(UUID userId, UUID bookId) {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
     BookDto bookDto = bookService.getBookById(bookId);
@@ -108,6 +108,8 @@ public class UserServiceImpl implements UserService {
     return userRepository
         .findById(userId)
         .orElseThrow(
-            () -> new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND.formatted(userId)));
+            () ->
+                new UserNotFoundException(
+                    ExceptionMessages.USER_NOT_FOUND_BY_ID.formatted(userId)));
   }
 }

@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
+import com.nerdysoft.library.service.dto.BookWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,7 @@ public class BookController {
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
   private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String USER_NAME_PATH = "/users/{userName}";
 
   private static final String BAD_REQUEST_ERROR_EXAMPLE =
       """
@@ -59,8 +62,30 @@ public class BookController {
           "details": "Book with id=a30963ae-8a32-4c26-a83b-0eb8ff2c8a1b nod found"
       }
       """;
+  private static final String BOOKS_BORROWED_NOT_FOUND =
+      """
+      {
+          "timestamp": "2024-08-15T09:46:55.607145702",
+          "errorCode": 404,
+          "details": "Books borrowed by user with name 'John Smith' not found"
+      }
+      """;
 
   private final BookService bookService;
+
+  @Operation(
+      summary = "Return books",
+      operationId = "getBooksBorrowedByUser",
+      description = "Returns books borrowed by user found by their name",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "The list of books"),
+        @ApiResponse(responseCode = "404", description = "Books not found borrowed by a user")
+      })
+  @GetMapping(value = V1 + USER_NAME_PATH + BOOKS_PATH, produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<BookWrapper> getBooksBorrowedByUser(@PathVariable String userName) {
+    BookWrapper userBooks = bookService.getBooksBorrowedByUser(userName);
+    return ResponseEntity.ok(userBooks);
+  }
 
   /**
    * Deletes a book if it is not related to any user.

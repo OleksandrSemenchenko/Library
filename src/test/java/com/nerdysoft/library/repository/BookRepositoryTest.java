@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nerdysoft.library.repository.entity.Book;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,24 @@ class BookRepositoryTest {
   private static final UUID BOOK_ID_OF_USER =
       UUID.fromString("2decc0bd-9730-4145-b18e-94029dfb961f");
   private static final UUID BOOK_ID = UUID.fromString("42d3f123-dd2f-4a10-a182-6506edd9d355");
+  private static final String USER_NAME = "John Doe";
+  private static final String NOT_EXISTING_USER_NAME = "Denzel Washington";
 
   @Autowired private BookRepository bookRepository;
+
+  @Test
+  void findByUsersName_shouldReturnEmptyList_whenNoRelation() {
+    List<Book> books = bookRepository.findByUsersName(NOT_EXISTING_USER_NAME);
+
+    assertTrue(books.isEmpty());
+  }
+
+  @Test
+  void findByUsersName_shouldReturnBooks_whenRelationExist() {
+    List<Book> books = bookRepository.findByUsersName(USER_NAME);
+
+    assertFalse(books.isEmpty());
+  }
 
   @Test
   void isBookRelatedToAnyUser_shouldReturnFalse_whenBookHasNoRelation() {

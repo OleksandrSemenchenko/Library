@@ -12,7 +12,9 @@ import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
+import com.nerdysoft.library.service.dto.BookWrapper;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,28 @@ public class BookServiceImpl implements BookService {
 
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
+
+  @Override
+  public BookWrapper getBooksBorrowedByUser(String userName) {
+    List<Book> borrowedBooks = bookRepository.findByUsersName(userName);
+
+    if (borrowedBooks.isEmpty()) {
+      log.debug(ExceptionMessages.BOOK_NOT_FOUND_BY_USER_NAME.formatted(userName));
+      throw new BookNotFoundException(
+          ExceptionMessages.BOOK_NOT_FOUND_BY_USER_NAME.formatted(userName));
+    }
+    List<BookDto> borrowedBookDtos =
+        borrowedBooks.stream()
+            .map(
+                book -> {
+                  book.setAmount(null);
+                  return book;
+                })
+            .map(bookMapper::toDto)
+            .toList();
+
+    return BookWrapper.builder().userName(userName).books(borrowedBookDtos).build();
+  }
 
   @Override
   public BookDto decreaseBookAmountByOne(UUID bookId) {

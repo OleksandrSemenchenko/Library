@@ -14,6 +14,8 @@ import com.nerdysoft.library.mapper.BookMapper;
 import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
 import com.nerdysoft.library.service.dto.BookDto;
+import com.nerdysoft.library.service.dto.BookWrapper;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +32,7 @@ class BookServiceImplTest {
 
   private static final int EXPECTED_BOOKS_AMOUNT = 2;
   private static final UUID BOOK_ID = UUID.randomUUID();
+  private static final String USER_NAME = "John Doe";
 
   @InjectMocks private BookServiceImpl bookService;
 
@@ -39,6 +42,28 @@ class BookServiceImplTest {
   void setUp() {
     BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
     ReflectionTestUtils.setField(bookService, "bookMapper", bookMapper);
+  }
+
+  @Test
+  void getBooksBorrowedByUser_shouldReturnBooks_whenBorrowedBooksAreInDb() {
+    Book book = TestDataGenerator.generateBook();
+
+    when(bookRepository.findByUsersName(USER_NAME)).thenReturn(List.of(book));
+    BookWrapper actualBookWrapper = bookService.getBooksBorrowedByUser(USER_NAME);
+
+    BookDto expectedBookDto = TestDataGenerator.generateBookDto();
+    expectedBookDto.setAmount(null);
+    BookWrapper expectedBookWrapper =
+        BookWrapper.builder().userName(USER_NAME).books(List.of(expectedBookDto)).build();
+
+    assertEquals(expectedBookWrapper, actualBookWrapper);
+  }
+
+  @Test
+  void getBooksBorrowedByUser_shouldThrowException_whenNoBorrowedBooks() {
+    when(bookRepository.findByUsersName(USER_NAME)).thenReturn(List.of());
+
+    assertThrows(BookNotFoundException.class, () -> bookService.getBooksBorrowedByUser(USER_NAME));
   }
 
   @Test
