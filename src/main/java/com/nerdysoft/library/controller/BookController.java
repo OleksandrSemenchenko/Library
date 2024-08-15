@@ -62,9 +62,25 @@ public class BookController {
           "details": "Book with id=a30963ae-8a32-4c26-a83b-0eb8ff2c8a1b nod found"
       }
       """;
+  private static final String BOOKS_BORROWED_NOT_FOUND =
+      """
+      {
+          "timestamp": "2024-08-15T09:46:55.607145702",
+          "errorCode": 404,
+          "details": "Books borrowed by user with name 'John Smith' not found"
+      }
+      """;
 
   private final BookService bookService;
 
+  @Operation(
+      summary = "Return books",
+      operationId = "getBooksBorrowedByUser",
+      description = "Returns books borrowed by user found by their name",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "The list of books"),
+        @ApiResponse(responseCode = "404", description = "Books not found borrowed by a user")
+      })
   @GetMapping(value = V1 + USER_NAME_PATH + BOOKS_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<BookWrapper> getBooksBorrowedByUser(@PathVariable String userName) {
     BookWrapper userBooks = bookService.getBooksBorrowedByUser(userName);
