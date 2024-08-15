@@ -1,0 +1,42 @@
+services:
+  library-service:
+    image: library-service
+    build:
+      context: ./
+      target: develop
+    networks:
+      - library-network
+    ports:
+      - 8081:8081
+    environment:
+      - POSTGRES_HOST=library-database
+    depends_on:
+      library-database:
+        condition: service_healthy
+
+  library-database:
+    networks:
+      library-network:
+        aliases:
+          - library-database
+    image: postgres:16.4
+    environment:
+      - POSTGRES_USER=library
+      - POSTGRES_PASSWORD=library
+    volumes:
+      - library-postgres_data:/var/lib/postgresql/data
+      - library-postgres_config:/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U library -d library"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 2s
+      start_interval: 2s
+
+networks:
+  library-network:
+
+volumes:
+  library-postgres_data:
+  library-postgres_config:
