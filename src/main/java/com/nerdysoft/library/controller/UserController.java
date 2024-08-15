@@ -94,8 +94,8 @@ public class UserController {
       })
   @PutMapping(value = V1 + USER_PATH + BOOK_PATH)
   @ResponseStatus(OK)
-  public void borrowBook(@PathVariable UUID userId, @PathVariable UUID bookId) {
-    userService.borrowBook(userId, bookId);
+  public void borrowBookByUser(@PathVariable UUID userId, @PathVariable UUID bookId) {
+    userService.borrowBookByUser(userId, bookId);
   }
 
   @Operation(

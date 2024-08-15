@@ -1,6 +1,7 @@
 package com.nerdysoft.library.repository;
 
 import com.nerdysoft.library.repository.entity.Book;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface BookRepository extends JpaRepository<Book, UUID> {
+
+  List<Book> findByUsersName(String userName);
 
   @Query(
       value = "SELECT EXISTS (SELECT ub.* FROM users_books ub WHERE ub.book_id = :bookId)",

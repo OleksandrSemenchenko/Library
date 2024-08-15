@@ -79,7 +79,7 @@ class UserServiceImplTest {
   }
 
   @Test
-  void borrowBook_shouldCreateUserBookRelation_whenRequested() {
+  void borrowBookByUser_shouldCreateUserBookRelation_whenRequested() {
     User user = TestDataGenerator.generateUser();
     BookDto bookDto = TestDataGenerator.generateBookDto();
     int userBooksQuantity = 1;
@@ -90,14 +90,14 @@ class UserServiceImplTest {
     when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
         .thenReturn(userBooksQuantity);
 
-    userService.borrowBook(USER_ID, BOOK_ID);
+    userService.borrowBookByUser(USER_ID, BOOK_ID);
 
     verify(userRepository).createUserBookRelation(anyString(), anyString(), anyString());
     verify(bookService).decreaseBookAmountByOne(BOOK_ID);
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenUserHasMaxBooksQuantity() {
+  void borrowBookByUser_shouldThrowException_whenUserHasMaxBooksQuantity() {
     User user = TestDataGenerator.generateUser();
     BookDto bookDto = TestDataGenerator.generateBookDto();
     int maxBooksQuantity = 10;
@@ -109,11 +109,12 @@ class UserServiceImplTest {
         .thenReturn(maxBooksQuantity);
 
     assertThrows(
-        UserBookRelationConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
+        UserBookRelationConflictException.class,
+        () -> userService.borrowBookByUser(USER_ID, BOOK_ID));
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenNoAvailableBooksInDb() {
+  void borrowBookByUser_shouldThrowException_whenNoAvailableBooksInDb() {
     User user = TestDataGenerator.generateUser();
     BookDto bookDto = TestDataGenerator.generateBookDto();
     bookDto.setAmount(0);
@@ -125,23 +126,25 @@ class UserServiceImplTest {
     when(userRepository.countBookRelationsByUserId(USER_ID.toString()))
         .thenReturn(userBooksQuantity);
 
-    assertThrows(BookAmountConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
+    assertThrows(
+        BookAmountConflictException.class, () -> userService.borrowBookByUser(USER_ID, BOOK_ID));
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenNoUserInDb() {
+  void borrowBookByUser_shouldThrowException_whenNoUserInDb() {
     when(userRepository.existsByIdAndBooksId(USER_ID, BOOK_ID)).thenReturn(false);
     when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
+    assertThrows(UserNotFoundException.class, () -> userService.borrowBookByUser(USER_ID, BOOK_ID));
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenUserBookRelationAlreadyExists() {
+  void borrowBookByUser_shouldThrowException_whenUserBookRelationAlreadyExists() {
     when(userRepository.existsByIdAndBooksId(USER_ID, BOOK_ID)).thenReturn(true);
 
     assertThrows(
-        UserBookRelationConflictException.class, () -> userService.borrowBook(USER_ID, BOOK_ID));
+        UserBookRelationConflictException.class,
+        () -> userService.borrowBookByUser(USER_ID, BOOK_ID));
   }
 
   @Test

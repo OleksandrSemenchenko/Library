@@ -7,7 +7,7 @@ public interface UserService {
 
   void deleteUser(UUID userId);
 
-  void borrowBook(UUID userId, UUID bookId);
+  void borrowBookByUser(UUID userId, UUID bookId);
 
   UserDto getUserById(UUID userId);
 }

@@ -62,8 +62,8 @@ class UserControllerTest {
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenUserHasMaxBooksQuantity() throws Exception {
-    doThrow(UserBookRelationConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+  void borrowBookByUser_shouldThrowException_whenNoAvailableBooks() throws Exception {
+    doThrow(BookAmountConflictException.class).when(userService).borrowBookByUser(USER_ID, BOOK_ID);
 
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
@@ -74,20 +74,8 @@ class UserControllerTest {
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenNoAvailableBooks() throws Exception {
-    doThrow(BookAmountConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
-
-    mockMvc
-        .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
-        .andExpect(status().isConflict())
-        .andExpect(jsonPath("$.details").hasJsonPath())
-        .andExpect(jsonPath("$.errorCode", Matchers.is(409)))
-        .andExpect(jsonPath("$.timestamp").exists());
-  }
-
-  @Test
-  void borrowBook_shouldThrowException_whenNoBookInDb() throws Exception {
-    doThrow(BookNotFoundException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+  void borrowBookByUser_shouldThrowException_whenNoBookInDb() throws Exception {
+    doThrow(BookNotFoundException.class).when(userService).borrowBookByUser(USER_ID, BOOK_ID);
 
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
@@ -98,8 +86,8 @@ class UserControllerTest {
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenNoUserInDb() throws Exception {
-    doThrow(UserNotFoundException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+  void borrowBookByUser_shouldThrowException_whenNoUserInDb() throws Exception {
+    doThrow(UserNotFoundException.class).when(userService).borrowBookByUser(USER_ID, BOOK_ID);
 
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
@@ -110,8 +98,10 @@ class UserControllerTest {
   }
 
   @Test
-  void borrowBook_shouldThrowException_whenUserAlreadyHasBook() throws Exception {
-    doThrow(UserBookRelationConflictException.class).when(userService).borrowBook(USER_ID, BOOK_ID);
+  void borrowBookByUser_shouldThrowException_whenUserCannotBorrowBook() throws Exception {
+    doThrow(UserBookRelationConflictException.class)
+        .when(userService)
+        .borrowBookByUser(USER_ID, BOOK_ID);
 
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))

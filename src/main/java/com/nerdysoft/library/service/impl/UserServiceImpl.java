@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public void borrowBook(UUID userId, UUID bookId) {
+  public void borrowBookByUser(UUID userId, UUID bookId) {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
     BookDto bookDto = bookService.getBookById(bookId);

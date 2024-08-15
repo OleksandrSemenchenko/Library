@@ -12,6 +12,7 @@ import com.nerdysoft.library.repository.BookRepository;
 import com.nerdysoft.library.repository.entity.Book;
 import com.nerdysoft.library.service.BookService;
 import com.nerdysoft.library.service.dto.BookDto;
+import com.nerdysoft.library.service.dto.BookWrapper;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,6 +27,11 @@ public class BookServiceImpl implements BookService {
 
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
+
+  @Override
+  public BookWrapper getBooksBorrowedByUser(String userName) {
+    return null;
+  }
 
   @Override
   public BookDto decreaseBookAmountByOne(UUID bookId) {

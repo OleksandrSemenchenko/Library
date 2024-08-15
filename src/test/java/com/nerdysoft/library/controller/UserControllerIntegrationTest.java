@@ -39,7 +39,7 @@ class UserControllerIntegrationTest {
   }
 
   @Test
-  void borrowBook_shouldReturnStatus200_whenUserBorrowsBook() throws Exception {
+  void borrowBookByUser_shouldReturnStatus200_whenUserBorrowsBook() throws Exception {
     mockMvc
         .perform(MockMvcRequestBuilders.put(V1 + USER_PATH + BOOK_PATH, USER_ID, BOOK_ID))
         .andExpect(status().isOk());
