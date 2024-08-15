@@ -51,6 +51,28 @@ class UserServiceImplTest {
   }
 
   @Test
+  void updateUser_shouldUpdateUser_whenUserIsInDb() {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+    User user = TestDataGenerator.generateUser();
+
+    when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+    when(userRepository.save(user)).thenReturn(user);
+
+    UserDto updatedUser = userService.updateUser(userDto);
+
+    assertEquals(userDto, updatedUser);
+  }
+
+  @Test
+  void updateUser_shouldThrowException_whenNoUserInDb() {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+
+    when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+
+    assertThrows(UserNotFoundException.class, () -> userService.updateUser(userDto));
+  }
+
+  @Test
   void createUser_shouldCreate_whenRequested() {
     UserDto userDto = TestDataGenerator.generateUserDto();
     User user = TestDataGenerator.generateUser();

@@ -1,10 +1,12 @@
 package com.nerdysoft.library.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +45,21 @@ class UserControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @MockBean private UserService userService;
+
+  @Test
+  void updateUser_shouldReturnStatus404AndErrorBody_whenNoUserInDb() throws Exception {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+    String requestBody = objectMapper.writeValueAsString(userDto);
+
+    when(userService.updateUser(any(UserDto.class))).thenThrow(UserNotFoundException.class);
+
+    mockMvc
+        .perform(put(V1 + USER_ID_PATH, USER_ID).contentType(APPLICATION_JSON).content(requestBody))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.errorCode", Matchers.is(404)))
+        .andExpect(jsonPath("$.timestamp").exists());
+  }
 
   @Test
   void createUser_shouldReturnStatus400AndErrorBody_whenUserNameIsNotValid() throws Exception {

@@ -3,15 +3,20 @@ package com.nerdysoft.library.controller;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerdysoft.library.TestDataGenerator;
+import com.nerdysoft.library.repository.UserRepository;
+import com.nerdysoft.library.repository.entity.User;
 import com.nerdysoft.library.service.dto.UserDto;
+import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,6 +43,27 @@ class UserControllerIntegrationTest {
 
   @Autowired private ObjectMapper objectMapper;
 
+  @Autowired private UserRepository userRepository;
+
+  @Test
+  @Transactional
+  void updateUser_shouldUpdateAndReturnStatus200_whenUserUpdated() throws Exception {
+    UserDto userDto = TestDataGenerator.generateUserDto();
+    String newName = "Elizabeth Taylor";
+    userDto.setName(newName);
+    String requestBody = objectMapper.writeValueAsString(userDto);
+
+    mockMvc
+        .perform(put(V1 + USER_ID_PATH, USER_ID).contentType(APPLICATION_JSON).content(requestBody))
+        .andExpect(status().isOk());
+
+    User updatedUser = userRepository.findById(USER_ID).get();
+    User expectedUser = TestDataGenerator.generateUser();
+    expectedUser.setName(newName);
+
+    Assertions.assertEquals(expectedUser, updatedUser);
+  }
+
   @Test
   void createUser_shouldReturnStatus201_whenUserCreated() throws Exception {
     UserDto userDto = TestDataGenerator.generateUserDto();
@@ -59,7 +85,7 @@ class UserControllerIntegrationTest {
   @Test
   void borrowBookByUser_shouldReturnStatus200_whenUserBorrowsBook() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.put(V1 + USER_ID_PATH + BOOK_PATH, USER_ID, BOOK_ID))
+        .perform(put(V1 + USER_ID_PATH + BOOK_PATH, USER_ID, BOOK_ID))
         .andExpect(status().isOk());
   }
 
