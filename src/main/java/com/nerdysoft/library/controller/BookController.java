@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +35,7 @@ public class BookController {
 
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
+  private static final String BOOKS_BORROWED_PATH = "/books/borrowed";
   private static final String BOOK_PATH = "/books/{bookId}";
   private static final String USER_NAME_PATH = "/users/{userName}";
 
@@ -72,6 +75,12 @@ public class BookController {
       """;
 
   private final BookService bookService;
+
+  @GetMapping(value = V1 + BOOKS_BORROWED_PATH, produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<BookDto>> getAllBorrowedBooks(Pageable pageable) {
+    Page<BookDto> borrowedBooks = bookService.getAllBorrowedBooks(pageable);
+    return ResponseEntity.ok(borrowedBooks);
+  }
 
   @Operation(
       summary = "Return books",

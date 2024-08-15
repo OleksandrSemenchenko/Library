@@ -3,8 +3,12 @@ package com.nerdysoft.library.service;
 import com.nerdysoft.library.service.dto.BookDto;
 import com.nerdysoft.library.service.dto.BookWrapper;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
+
+  Page<BookDto> getAllBorrowedBooks(Pageable pageable);
 
   BookWrapper getBooksBorrowedByUser(String userName);
 

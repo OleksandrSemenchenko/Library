@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +31,13 @@ public class BookServiceImpl implements BookService {
 
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
+
+  @Override
+  public Page<BookDto> getAllBorrowedBooks(Pageable pageable) {
+    List<Book> books = bookRepository.findAllBooksRelatedToUsers();
+    List<BookDto> bookDtos = bookMapper.toDtoList(books);
+    return new PageImpl<>(bookDtos, pageable, bookDtos.size());
+  }
 
   @Override
   public BookWrapper getBooksBorrowedByUser(String userName) {

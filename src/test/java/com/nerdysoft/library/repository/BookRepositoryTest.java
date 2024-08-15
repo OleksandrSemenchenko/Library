@@ -28,6 +28,13 @@ class BookRepositoryTest {
   @Autowired private BookRepository bookRepository;
 
   @Test
+  void findAllBooksRelatedToUsers_shouldReturnBooksPage_whenUserBookRelationsExist() {
+    List<Book> books = bookRepository.findAllBooksRelatedToUsers();
+
+    assertFalse(books.isEmpty());
+  }
+
+  @Test
   void findByUsersName_shouldReturnEmptyList_whenNoRelation() {
     List<Book> books = bookRepository.findByUsersName(NOT_EXISTING_USER_NAME);
 
