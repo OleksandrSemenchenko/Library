@@ -1,5 +1,6 @@
 package com.nerdysoft.library.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nerdysoft.library.validation.BookTitle;
 import com.nerdysoft.library.validation.Name;
 import jakarta.validation.constraints.Positive;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookDto {
 
   private UUID id;

@@ -2,6 +2,7 @@ package com.nerdysoft.library.mapper;
 
 import com.nerdysoft.library.repository.entity.Book;
 import com.nerdysoft.library.service.dto.BookDto;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -14,6 +15,8 @@ import org.mapstruct.MappingConstants;
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookMapper {
+
+  List<BookDto> toDtoList(List<Book> books);
 
   Book toEntity(BookDto bookDto);
 

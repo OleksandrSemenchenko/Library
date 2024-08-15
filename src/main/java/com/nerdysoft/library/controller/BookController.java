@@ -65,7 +65,7 @@ public class BookController {
 
   private final BookService bookService;
 
-  @GetMapping(value = V1 + USER_NAME_PATH + BOOKS_PATH)
+  @GetMapping(value = V1 + USER_NAME_PATH + BOOKS_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<BookWrapper> getBooksBorrowedByUser(@PathVariable String userName) {
     BookWrapper userBooks = bookService.getBooksBorrowedByUser(userName);
     return ResponseEntity.ok(userBooks);

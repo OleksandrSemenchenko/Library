@@ -34,6 +34,7 @@ class UserServiceImplTest {
   private static final UUID USER_ID = UUID.fromString("f0d9bdfc-38e7-4a34-b07f-8216574efbb5");
   private static final UUID NOT_EXISTING_USER_ID = UUID.randomUUID();
   private static final UUID BOOK_ID = UUID.randomUUID();
+  private static final String USER_NAME = "John Doe";
 
   @InjectMocks private UserServiceImpl userService;
 
