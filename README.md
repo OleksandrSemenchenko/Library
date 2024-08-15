@@ -16,9 +16,8 @@ This is a service responsible for holding and processing data related to books a
 
 To build and run the application, you need to be installed and configured:
 
-1. Java 17 (Amazon)
+1. Java 17
 2. Maven
-3. Git
 
 ### Build, deploy and run
 
@@ -35,8 +34,8 @@ To build and run the application, you need to be installed and configured:
 
 4. Use next endpoints to ensure that application has started successfully:
 
+- [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 - [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs)
 - [http://localhost:8081/v3/api-docs.yaml](http://localhost:8081/v3/api-docs)
-- [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 - [http://localhost:8081/actuator](http://localhost:8081/actuator)
 - [http://localhost:8081/actuator/health](http://localhost:8081/actuator/health)
