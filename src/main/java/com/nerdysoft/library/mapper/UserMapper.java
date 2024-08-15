@@ -3,6 +3,7 @@ package com.nerdysoft.library.mapper;
 import com.nerdysoft.library.repository.entity.User;
 import com.nerdysoft.library.service.dto.UserDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 /**
@@ -15,6 +16,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
 
+  @Mapping(target = "membershipDate", ignore = true)
   User toEntity(UserDto userDto);
 
   UserDto toDto(User user);

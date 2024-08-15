@@ -58,8 +58,29 @@ public class UserController {
       }
       """;
 
+  private static final String NOT_VALID_USER_NAME_ERROR_EXAMPLE =
+      """
+        {
+            "timestamp": "2024-08-16T00:12:43.422236202",
+            "errorCode": 400,
+            "details": {
+                "name": "must not be blank"
+            }
+        }
+        """;
+
   private final UserService userService;
 
+  @Operation(
+      summary = "Creates user",
+      operationId = "createUser",
+      responses = {
+        @ApiResponse(responseCode = "201", description = "A user was created successfully"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "A request body contains a not valid username",
+            content = @Content(examples = @ExampleObject(NOT_VALID_USER_NAME_ERROR_EXAMPLE)))
+      })
   @PostMapping(value = V1 + USERS_PATH, consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> createUser(@RequestBody @Validated UserDto userDto) {
     UserDto createdUser = userService.createUser(userDto);
