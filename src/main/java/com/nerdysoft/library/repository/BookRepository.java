@@ -10,6 +10,16 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookRepository extends JpaRepository<Book, UUID> {
 
+  @Query(
+      value =
+          """
+      SELECT b.id, b.title, b.author,
+          (SELECT count(ub2.book_id) FROM users_books ub2 WHERE ub2.book_id = b.id) AS amount
+        FROM books b JOIN users_books ub ON b.id = ub.book_id
+      """,
+      nativeQuery = true)
+  List<Book> findAllBooksRelatedToUsers();
+
   List<Book> findByUsersName(String userName);
 
   @Query(

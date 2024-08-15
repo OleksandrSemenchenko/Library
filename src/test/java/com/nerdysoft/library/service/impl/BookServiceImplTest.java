@@ -25,6 +25,9 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +45,23 @@ class BookServiceImplTest {
   void setUp() {
     BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
     ReflectionTestUtils.setField(bookService, "bookMapper", bookMapper);
+  }
+
+  @Test
+  void getAllBorrowedBooks_shouldReturnBooks_whenRequested() {
+    Book book = TestDataGenerator.generateBook();
+    List<Book> books = List.of(book);
+    int pageNumber = 1;
+    int pageSize = 5;
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    when(bookRepository.findAllBooksRelatedToUsers()).thenReturn(books);
+
+    Page<BookDto> bookDtoPage = bookService.getAllBorrowedBooks(pageable);
+    BookDto retrievedBookDto = bookDtoPage.getContent().get(0);
+
+    BookDto expectedBookDto = TestDataGenerator.generateBookDto();
+    assertEquals(expectedBookDto, retrievedBookDto);
   }
 
   @Test
