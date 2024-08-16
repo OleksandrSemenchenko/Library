@@ -50,7 +50,7 @@ public class BookController {
           }
       }
       """;
-  private static final String FORBIDDEN_ERROR_EXAMPLE =
+  private static final String CONFLICT_ERROR_EXAMPLE =
       """
       {
           "timestamp": "2024-08-14T13:43:42.852665792",
@@ -80,12 +80,12 @@ public class BookController {
   @Operation(
       summary = "Updates a book",
       operationId = "updateBook",
-      description = "Updates all book fields",
+      description = "Updates book data",
       responses = {
         @ApiResponse(responseCode = "200", description = "A book was updated successfully"),
         @ApiResponse(
             responseCode = "400",
-            description = "Book data is not valid",
+            description = "Book data in a request body is not valid",
             content = @Content(examples = @ExampleObject(BAD_REQUEST_ERROR_EXAMPLE))),
         @ApiResponse(
             responseCode = "404",
@@ -101,8 +101,10 @@ public class BookController {
   @Operation(
       summary = "Returns all borrowed books",
       operationId = "getAllBorrowedBooks",
-      description = "Return all borrowed books in page format",
-      responses = {@ApiResponse(responseCode = "200", description = "The page of borrowed books")})
+      description = "Returns all borrowed books in page format",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Pages with a list of borrowed books")
+      })
   @GetMapping(value = V1 + BOOKS_BORROWED_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<BookDto>> getAllBorrowedBooks(Pageable pageable) {
     Page<BookDto> borrowedBooks = bookService.getAllBorrowedBooks(pageable);
@@ -112,9 +114,9 @@ public class BookController {
   @Operation(
       summary = "Returns books",
       operationId = "getBooksBorrowedByUser",
-      description = "Returns books borrowed by user found by their name",
+      description = "Returns books borrowed by a user",
       responses = {
-        @ApiResponse(responseCode = "200", description = "The list of books"),
+        @ApiResponse(responseCode = "200", description = "A list of books"),
         @ApiResponse(
             responseCode = "404",
             description = "Books not found borrowed by a user",
@@ -136,15 +138,15 @@ public class BookController {
       operationId = "deleteBookById",
       description = "Deletes a book from a database if it does not have relations to any user",
       responses = {
-        @ApiResponse(responseCode = "204", description = "The book was successful deleted"),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden to delete a book",
-            content = @Content(examples = @ExampleObject(FORBIDDEN_ERROR_EXAMPLE))),
+        @ApiResponse(responseCode = "204", description = "A book was successful deleted"),
         @ApiResponse(
             responseCode = "404",
             description = "The book not found",
-            content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE)))
+            content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "A borrowed book cannot be deleted",
+            content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
       })
   @DeleteMapping(value = V1 + BOOK_ID_PATH)
   @ResponseStatus(NO_CONTENT)
@@ -155,7 +157,7 @@ public class BookController {
   @Operation(
       summary = "Add book to a database",
       operationId = "addBook",
-      description = "Creates or updates book in a database",
+      description = "Creates or updates book data",
       responses = {
         @ApiResponse(responseCode = "200", description = "Book data"),
         @ApiResponse(

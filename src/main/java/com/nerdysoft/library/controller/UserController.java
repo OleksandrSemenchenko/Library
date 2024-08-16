@@ -51,10 +51,9 @@ public class UserController {
   private static final String CONFLICT_ERROR_EXAMPLE =
       """
       {
-          "timestamp": "2024-08-14T20:52:36.190695546",
+          "timestamp": "2024-08-16T04:21:54.075375957",
           "errorCode": 409,
-          "details": "User with id=f0d9bdfc-38e7-4a34-b07f-8216574efbb5 is already related to
-      book with id=2decc0bd-9730-4145-b18e-94029dfb961f"
+          "details": "The user with id=f0d9bdfc-38e7-4a34-b07f-8216574efbb5 has 1 borrowed books and cannot be deleted"
       }
       """;
 
@@ -74,16 +73,16 @@ public class UserController {
   @Operation(
       summary = "Updates a user",
       operationId = "updateUser",
-      description = "Updates all user fields",
+      description = "Updates user data",
       responses = {
-        @ApiResponse(responseCode = "200", description = "A user was updated successfully"),
+        @ApiResponse(responseCode = "200", description = "User data was updated successfully"),
         @ApiResponse(
             responseCode = "400",
             description = "A user name is not valid",
             content = @Content(examples = @ExampleObject(NOT_VALID_USER_NAME_ERROR_EXAMPLE))),
         @ApiResponse(
             responseCode = "404",
-            description = "A user not found",
+            description = "User not found",
             content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE)))
       })
   @PutMapping(value = V1 + USER_ID_PATH, consumes = APPLICATION_JSON_VALUE)
@@ -94,7 +93,7 @@ public class UserController {
   }
 
   @Operation(
-      summary = "Creates user",
+      summary = "Creates a user",
       operationId = "createUser",
       responses = {
         @ApiResponse(responseCode = "201", description = "A user was created successfully"),
@@ -119,14 +118,14 @@ public class UserController {
       operationId = "deleteUser",
       description = "Deletes a user if their don't have borrowed books",
       responses = {
-        @ApiResponse(responseCode = "204", description = "Deletes successfully a user"),
+        @ApiResponse(responseCode = "204", description = "A user was deleted successfully"),
         @ApiResponse(
             responseCode = "404",
-            description = "A user not found",
+            description = "User not found",
             content = @Content(examples = @ExampleObject(USER_NOT_FOUND_ERROR_EXAMPLE))),
         @ApiResponse(
             responseCode = "409",
-            description = "A user has borrowed books",
+            description = "A user cannot be deleted because of they have borrowed books",
             content = @Content(examples = @ExampleObject(CONFLICT_ERROR_EXAMPLE)))
       })
   @DeleteMapping(value = V1 + USER_ID_PATH)
@@ -138,11 +137,11 @@ public class UserController {
   @Operation(
       summary = "Relates a user with a book",
       operationId = "borrowBook",
-      description = "Creates in a database relation between a user and a book",
+      description = "Creates relation between a user and a book",
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "Creates successfully a user book relation"),
+            description = "A user book relation was successfully created"),
         @ApiResponse(
             responseCode = "404",
             description = "A user or a book not found",
@@ -161,9 +160,9 @@ public class UserController {
   @Operation(
       summary = "Returns a user",
       operationId = "getUser",
-      description = "Returns data of a user from a database",
+      description = "Returns user data from a database",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Data of a user"),
+        @ApiResponse(responseCode = "200", description = "User data"),
         @ApiResponse(
             responseCode = "404",
             description = "User not found",
