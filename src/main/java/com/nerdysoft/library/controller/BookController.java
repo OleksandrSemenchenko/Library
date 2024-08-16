@@ -77,6 +77,21 @@ public class BookController {
 
   private final BookService bookService;
 
+  @Operation(
+      summary = "Updates a book",
+      operationId = "updateBook",
+      description = "Updates all book fields",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "A book was updated successfully"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Book data is not valid",
+            content = @Content(examples = @ExampleObject(BAD_REQUEST_ERROR_EXAMPLE))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "A book not found",
+            content = @Content(examples = @ExampleObject(BOOK_NOT_FOUND_ERROR_EXAMPLE)))
+      })
   @PutMapping(value = V1 + BOOK_ID_PATH, consumes = APPLICATION_JSON_VALUE)
   public void updateBook(@RequestBody @Validated BookDto bookDto, @PathVariable UUID bookId) {
     bookDto.setId(bookId);
@@ -100,7 +115,10 @@ public class BookController {
       description = "Returns books borrowed by user found by their name",
       responses = {
         @ApiResponse(responseCode = "200", description = "The list of books"),
-        @ApiResponse(responseCode = "404", description = "Books not found borrowed by a user")
+        @ApiResponse(
+            responseCode = "404",
+            description = "Books not found borrowed by a user",
+            content = @Content(examples = @ExampleObject(BOOKS_BORROWED_NOT_FOUND)))
       })
   @GetMapping(value = V1 + USER_NAME_PATH + BOOKS_PATH, produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<BookWrapper> getBooksBorrowedByUser(@PathVariable String userName) {
