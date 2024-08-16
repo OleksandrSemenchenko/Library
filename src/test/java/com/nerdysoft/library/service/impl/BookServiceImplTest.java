@@ -48,6 +48,28 @@ class BookServiceImplTest {
   }
 
   @Test
+  void updateBook_shouldUpdate_whenBookIsInDb() {
+    BookDto bookDto = TestDataGenerator.generateBookDto();
+    Book book = TestDataGenerator.generateBook();
+
+    when(bookRepository.findById(bookDto.getId())).thenReturn(Optional.of(book));
+    when(bookRepository.save(book)).thenReturn(book);
+
+    BookDto updatedBookDto = bookService.updateBook(bookDto);
+
+    assertEquals(bookDto, updatedBookDto);
+  }
+
+  @Test
+  void updateBook_shouldThrowException_whenNoBookInDb() {
+    BookDto bookDto = TestDataGenerator.generateBookDto();
+
+    when(bookRepository.findById(bookDto.getId())).thenReturn(Optional.empty());
+
+    assertThrows(BookNotFoundException.class, () -> bookService.updateBook(bookDto));
+  }
+
+  @Test
   void getAllBorrowedBooks_shouldReturnBooks_whenRequested() {
     Book book = TestDataGenerator.generateBook();
     List<Book> books = List.of(book);
