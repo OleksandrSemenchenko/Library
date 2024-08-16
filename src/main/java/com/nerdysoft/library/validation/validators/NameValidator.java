@@ -1,11 +1,11 @@
 package com.nerdysoft.library.validation.validators;
 
-import com.nerdysoft.library.validation.Name;
+import com.nerdysoft.library.validation.AuthorName;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
-public class NameValidator implements ConstraintValidator<Name, String> {
+public class NameValidator implements ConstraintValidator<AuthorName, String> {
 
   @Override
   public boolean isValid(String name, ConstraintValidatorContext context) {

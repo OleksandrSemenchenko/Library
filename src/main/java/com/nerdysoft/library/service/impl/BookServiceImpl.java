@@ -33,6 +33,15 @@ public class BookServiceImpl implements BookService {
   private final BookMapper bookMapper;
 
   @Override
+  @Transactional
+  public BookDto updateBook(BookDto bookDto) {
+    Book book = findBookById(bookDto.getId());
+    Book updatedBook = bookMapper.mergeWithDto(bookDto, book);
+    Book savedBook = bookRepository.save(updatedBook);
+    return bookMapper.toDto(savedBook);
+  }
+
+  @Override
   public Page<BookDto> getAllBorrowedBooks(Pageable pageable) {
     List<Book> books = bookRepository.findAllBooksRelatedToUsers();
     List<BookDto> bookDtos = bookMapper.toDtoList(books);
@@ -62,6 +71,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
+  @Transactional
   public BookDto decreaseBookAmountByOne(UUID bookId) {
     Book book = findBookById(bookId);
     int booksAmount = book.getAmount();
@@ -89,6 +99,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
+  @Transactional
   public void deleteBookById(UUID bookId) {
     if (bookRepository.isBookRelatedToAnyUser(bookId.toString())) {
       log.debug(BOOK_IS_BORROWED.formatted(bookId));

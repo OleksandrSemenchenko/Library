@@ -1,10 +1,12 @@
 package com.nerdysoft.library.controller;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -29,7 +32,7 @@ class BookControllerTest {
 
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
-  private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String BOOK_ID_PATH = "/books/{bookId}";
   private static final String USER_NAME_PATH = "/users/{userName}";
   private static final UUID BOOK_ID = UUID.randomUUID();
   private static final String USER_NAME = "John Doe";
@@ -39,6 +42,44 @@ class BookControllerTest {
   @MockBean private BookService bookService;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @Test
+  void updateBook_shouldReturnStatus404_whenNoBookInDb() throws Exception {
+    BookDto bookDto = TestDataGenerator.generateBookDto();
+    String requestBody = objectMapper.writeValueAsString(bookDto);
+
+    when(bookService.updateBook(any(BookDto.class))).thenThrow(BookNotFoundException.class);
+
+    mockMvc
+        .perform(
+            put(V1 + BOOK_ID_PATH, bookDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.timestamp").exists())
+        .andExpect(jsonPath("$.errorCode", is(404)));
+  }
+
+  @Test
+  void updateBook_shouldReturnStatus400_whenRequestBodyIsNotValid() throws Exception {
+    BookDto bookDto = TestDataGenerator.generateBookDto();
+    String notValidAuthorName = "d Flist";
+    String notValidTitle = "D";
+    bookDto.setAuthor(notValidAuthorName);
+    bookDto.setTitle(notValidTitle);
+    String requestBody = objectMapper.writeValueAsString(bookDto);
+
+    mockMvc
+        .perform(
+            put(V1 + BOOK_ID_PATH, bookDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.details").hasJsonPath())
+        .andExpect(jsonPath("$.timestamp").exists())
+        .andExpect(jsonPath("$.errorCode", is(400)));
+  }
 
   @Test
   void getBooksBorrowedByUser_shouldReturnStatus404_whenNoBorrowedBooks() throws Exception {
@@ -57,7 +98,7 @@ class BookControllerTest {
     doThrow(BookNotFoundException.class).when(bookService).deleteBookById(BOOK_ID);
 
     mockMvc
-        .perform(delete(V1 + BOOK_PATH, BOOK_ID))
+        .perform(delete(V1 + BOOK_ID_PATH, BOOK_ID))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.details").hasJsonPath())
         .andExpect(jsonPath("$.timestamp").exists())
@@ -69,7 +110,7 @@ class BookControllerTest {
     doThrow(DeleteBookConflictException.class).when(bookService).deleteBookById(BOOK_ID);
 
     mockMvc
-        .perform(delete(V1 + BOOK_PATH, BOOK_ID))
+        .perform(delete(V1 + BOOK_ID_PATH, BOOK_ID))
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.details").hasJsonPath())
         .andExpect(jsonPath("$.timestamp").exists())

@@ -2,13 +2,18 @@ package com.nerdysoft.library.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nerdysoft.library.TestDataGenerator;
+import com.nerdysoft.library.repository.BookRepository;
+import com.nerdysoft.library.repository.entity.Book;
 import com.nerdysoft.library.service.dto.BookDto;
+import jakarta.transaction.Transactional;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +30,7 @@ class BookControllerIntegrationTest {
 
   private static final String V1 = "/v1";
   private static final String BOOKS_PATH = "/books";
-  private static final String BOOK_PATH = "/books/{bookId}";
+  private static final String BOOK_ID_PATH = "/books/{bookId}";
   private static final String USER_NAME_PATH = "/users/{userName}";
   private static final String BOOKS_BORROWED_PATH = "/books/borrowed";
   private static final UUID BOOK_ID = UUID.fromString("42d3f123-dd2f-4a10-a182-6506edd9d355");
@@ -37,6 +42,30 @@ class BookControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @Autowired private BookRepository bookRepository;
+
+  @Test
+  @Transactional
+  void updateUser_shouldUpdateAndReturnStatus200_whenBookIsInDb() throws Exception {
+    BookDto bookDto = TestDataGenerator.generateBookDto();
+    String newAuthorName = "Herbert Schildt";
+    bookDto.setAuthor(newAuthorName);
+    String requestBody = objectMapper.writeValueAsString(bookDto);
+
+    mockMvc
+        .perform(
+            put(V1 + BOOK_ID_PATH, bookDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+        .andExpect(status().isOk());
+
+    Book updatedBook = bookRepository.findById(bookDto.getId()).get();
+    Book expectedBook = TestDataGenerator.generateBook();
+    expectedBook.setAuthor(newAuthorName);
+
+    Assertions.assertEquals(expectedBook, updatedBook);
+  }
 
   @Test
   void getAllBorrowedBooks_shouldReturnStatus200AndBody_whenBorrowedBooksAreInDb()
@@ -64,7 +93,7 @@ class BookControllerIntegrationTest {
   @Test
   void deleteBookById_shouldReturnStatus204_whenBookIsInDb() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.delete(V1 + BOOK_PATH, BOOK_ID))
+        .perform(MockMvcRequestBuilders.delete(V1 + BOOK_ID_PATH, BOOK_ID))
         .andExpect(status().isNoContent());
   }
 
