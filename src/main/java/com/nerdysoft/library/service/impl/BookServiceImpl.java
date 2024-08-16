@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +32,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookServiceImpl implements BookService {
 
+  private static final String GET_BOOK_BY_ID_CACHE = "getBookByIdCache";
+
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
 
   @Override
   @Transactional
+  @CachePut(value = GET_BOOK_BY_ID_CACHE, key = "#bookDto.id")
   public BookDto updateBook(BookDto bookDto) {
     Book book = findBookById(bookDto.getId());
     Book updatedBook = bookMapper.mergeWithDto(bookDto, book);
@@ -72,6 +78,7 @@ public class BookServiceImpl implements BookService {
 
   @Override
   @Transactional
+  @CacheEvict(value = GET_BOOK_BY_ID_CACHE, key = "#bookId")
   public BookDto decreaseBookAmountByOne(UUID bookId) {
     Book book = findBookById(bookId);
     int booksAmount = book.getAmount();
@@ -87,6 +94,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
+  @Cacheable(value = GET_BOOK_BY_ID_CACHE, key = "#bookId")
   public BookDto getBookById(UUID bookId) {
     Book book = findBookById(bookId);
     return bookMapper.toDto(book);
@@ -100,6 +108,7 @@ public class BookServiceImpl implements BookService {
 
   @Override
   @Transactional
+  @CacheEvict(value = GET_BOOK_BY_ID_CACHE, key = "#bookId")
   public void deleteBookById(UUID bookId) {
     if (bookRepository.isBookRelatedToAnyUser(bookId.toString())) {
       log.debug(BOOK_IS_BORROWED.formatted(bookId));

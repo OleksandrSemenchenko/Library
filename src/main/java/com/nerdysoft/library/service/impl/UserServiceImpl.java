@@ -20,12 +20,17 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+  private static final String GET_USER_BY_ID_CACHE = "getUserByIdCache";
 
   private final UserRepository userRepository;
   private final UserMapper userMapper;
@@ -36,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
+  @CachePut(value = GET_USER_BY_ID_CACHE, key = "#userDto.id")
   public UserDto updateUser(UserDto userDto) {
     User user = findUserById(userDto.getId());
     User updatedUser = userMapper.mergeWithDto(userDto, user);
@@ -45,6 +51,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
+  @CacheEvict(value = GET_USER_BY_ID_CACHE, allEntries = true)
   public UserDto createUser(UserDto userDto) {
     userDto.setId(null);
     userDto.setMembershipDate(null);
@@ -60,6 +67,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
+  @CacheEvict(value = GET_USER_BY_ID_CACHE, key = "#userId")
   public void deleteUser(UUID userId) {
     User user = findUserById(userId);
     int userBookQuantity = userRepository.countBookRelationsByUserId(userId.toString());
@@ -82,6 +90,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
+  @CacheEvict(value = GET_USER_BY_ID_CACHE, key = "#userId")
   public void borrowBookByUser(UUID userId, UUID bookId) {
     verifyIfUserBookRelationAlreadyExists(userId, bookId);
     verifyIfUserExists(userId);
@@ -118,6 +127,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Cacheable(value = GET_USER_BY_ID_CACHE, key = "#userId")
   public UserDto getUserById(UUID userId) {
     User user = findUserById(userId);
     return userMapper.toDto(user);
