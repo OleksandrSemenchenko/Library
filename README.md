@@ -22,9 +22,10 @@ To build and run the application, you need to be installed and configured:
 ### Build, deploy and run
 
 1. You can test and build the application with Maven command:
-2. You can run the application in 'dev' profile using Maven command, but before it is needed to configure the database according to settings in the 'application.yaml' file:
-   
+
 `mvn clean package`
+
+2. You can run the application in 'dev' profile using Maven command, but before it is needed to configure the database according to settings in the 'application.yaml' file:
    
 `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
 
